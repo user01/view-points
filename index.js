@@ -16,6 +16,8 @@
 const colors = ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#808080", "#FFFFFF", "#000000"];
 
 function init(data) {
+  const elm = document.getElementById('render-port');
+
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
@@ -24,8 +26,9 @@ function init(data) {
   document.body.appendChild(stats.dom);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.001, 1000);
+  const camera = new THREE.PerspectiveCamera(70, elm.clientWidth / elm.clientHeight, 0.001, 1000);
   camera.position.z = 12;
+  // camera.position.y = 10;
 
   scene.background = new THREE.Color(0xa0a0a0);
   scene.add(new THREE.AmbientLight(0x505050, 1.75));
@@ -41,7 +44,7 @@ function init(data) {
 
 
 
-  const controls = new THREE.TrackballControls(camera);
+  const controls = new THREE.TrackballControls(camera, elm);
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
@@ -84,9 +87,9 @@ function init(data) {
   }
 
   function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect = elm.clientWidth / elm.clientHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(elm.clientWidth, elm.clientHeight);
     render();
   }
 
@@ -101,25 +104,24 @@ function init(data) {
     }, 1000 / 60);
   }
 
-  const elm = document.getElementById('render-port');
   renderer = new THREE.WebGLRenderer({
     antialias: true
   });
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth - 4, window.innerHeight - 4);
+  renderer.setSize(elm.clientWidth, elm.clientHeight);
 
-  function onDocumentMouseMove(event) {
-    event.preventDefault();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-  }
+  // function onDocumentMouseMove(event) {
+  //   event.preventDefault();
+  //   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  //   mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+  // }
 
   elm.appendChild(renderer.domElement);
 
   window.addEventListener('resize', onWindowResize, false);
-  elm.addEventListener('mousemove', onDocumentMouseMove, false);
+  // elm.addEventListener('mousemove', onDocumentMouseMove, false);
   render();
   animate();
 }
 
-init()
+init();

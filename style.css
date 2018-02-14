@@ -8,3 +8,11 @@ canvas { width: 100%; height: 100% }
   text-shadow: #ffffff 0 0 0.2em;
   width: 16em;
 } */
+
+.block {
+  height: -webkit-calc(100vh - 72px);
+  height: -moz-calc(100vh - 72px);
+  height: calc(100vh - 72px);
+  background-color: rgba(90,90,190,0.8);
+  padding: 0;
+}
