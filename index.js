@@ -57,27 +57,65 @@ function init(data) {
 
 
 
-  var geom = new THREE.Geometry();
-  var material = new THREE.PointsMaterial({
-    size: Math.random() * 2,
-    transparent: true,
-    opacity: 0.55,
-    // color: colors[0],
-    color: 0xc0392b,
-    alphaTest: 0.5,
-    map: sprite = new THREE.TextureLoader().load("disc.png")
-  });
-  for (var i = 0; i < 50; i++) {
-    var particle = new THREE.Vector3(
-      10 * Math.random(),
-      10 * Math.random(),
-      10 * Math.random()
-    );
-    geom.vertices.push(particle);
+
+  const parent = new THREE.Object3D();
+
+  const load_points = (data) => {
+
+    var geom = new THREE.Geometry();
+    var material = new THREE.PointsMaterial({
+      size: data.size,
+      transparent: data.alphaTest < 1,
+      opacity: data.alphaTest,
+      color: data.color,
+      alphaTest: data.alphaTest,
+      map: sprite = new THREE.TextureLoader().load("disc.png")
+    });
+    for (var i = 0; i < data.points.length; i++) {
+      var particle = new THREE.Vector3(
+        data.points[i][0],
+        data.points[i][1],
+        data.points[i][2],
+      );
+      geom.vertices.push(particle);
+    }
+    const cloud = new THREE.Points(geom, material);
+    cloud.name = `particles${data.color}`;
+    scene.add(cloud);
+    return cloud;
   }
-  cloud = new THREE.Points(geom, material);
-  cloud.name = "particles";
-  scene.add(cloud);
+
+  load_points({
+    size: 0.4,
+    color: 0x0000ff,
+    alphaTest: 0.5,
+    points: R.pipe(
+      R.range(0),
+      R.map(elm => {
+        return [
+          (elm + 1) * Math.random(),
+          (elm + 1) * Math.random(),
+          (elm + 1) * Math.random(),
+        ]
+      })
+    )(5)
+  });
+
+  load_points({
+    size: 0.4,
+    color: 0x00ffff,
+    alphaTest: 0.5,
+    points: R.pipe(
+      R.range(0),
+      R.map(elm => {
+        return [
+          (elm + 1) * Math.random(),
+          (elm + 1) * Math.random(),
+          (elm + 1) * Math.random(),
+        ]
+      })
+    )(8)
+  });
 
 
 
