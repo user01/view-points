@@ -118,6 +118,34 @@ function init(data) {
   });
 
 
+  const pts_to_spline = (coors, mat, radius=0.1) => {
+    if (coors.length < 1) {
+      return new THREE.Object3D();
+    }
+    const spline_tube = new THREE.CatmullRomCurve3(coors.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
+    const geometry_tube = new THREE.TubeGeometry(spline_tube, Math.ceil(1024 * radius), radius, Math.ceil(128 * radius), false);
+    const mesh = new THREE.Mesh(geometry_tube, mat);
+    mesh.visible = false;
+    return mesh;
+  };
+  const tube_material = new THREE.MeshPhongMaterial({
+    // wireframe: true,
+    side: THREE.DoubleSide,
+    color: 0xff00ff
+  });
+  const test_tube = pts_to_spline(R.pipe(
+    R.range(0),
+    R.map(elm => {
+      return [
+        (elm + 1) * Math.random(),
+        (elm + 1) * Math.random(),
+        (elm + 1) * Math.random(),
+      ]
+    })
+  )(8), tube_material);
+  scene.add(test_tube);
+  test_tube.visible = true;
+
 
   function render() {
     renderer.render(scene, camera);
