@@ -113,16 +113,21 @@ function init(data) {
     });
     const max_points_per_cloud = 500;
     const threshold = Math.min(max_points_per_cloud / data.points.length, 1);
+    console.log(threshold);
+    console.log(data.points.length);
+    var count = 0;
     for (var i = 0; i < data.points.length; i++) {
       var particle = new THREE.Vector3(
         data.points[i][0],
         data.points[i][1],
         data.points[i][2],
       );
-      if (Math.random() > threshold) {
+      if (Math.random() > 1 - threshold) {
         geom.vertices.push(particle);
+        count++;
       }
     }
+    console.log(count);
     const cloud = new THREE.Points(geom, material);
     cloud.name = `cloud_${data.name}`;
     scene.add(cloud);
