@@ -61,7 +61,7 @@ function init(data) {
   // camera.position.y = 10;
 
   scene.background = new THREE.Color(0xa0a0a0);
-  scene.add(new THREE.AmbientLight(0x505050, 1.75));
+  scene.add(new THREE.AmbientLight(0x505050, 3.75));
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(0, 1, 1).normalize();
@@ -102,13 +102,15 @@ function init(data) {
       alphaTest: 0.5,
       map: sprite = new THREE.TextureLoader().load("disc.png")
     });
+    const max_points_per_cloud = 500;
+    const threshold = Math.min(max_points_per_cloud / data.points.length, 1);
     for (var i = 0; i < data.points.length; i++) {
       var particle = new THREE.Vector3(
         data.points[i][0],
         data.points[i][1],
         data.points[i][2],
       );
-      if (Math.random() > 0.8){
+      if (Math.random() > threshold){
         geom.vertices.push(particle);
       }
     }
