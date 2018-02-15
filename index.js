@@ -354,9 +354,6 @@ function init(data) {
     }).then((json) => {
       // console.log('parsed json', json);
       vm.fullset = JSON.stringify(add_raw_points(json));
-      // console.log(fix_points(json));
-      update_scene(json);
-
     }).catch((ex) => {
       console.error('parsing failed')
       console.error(ex)
