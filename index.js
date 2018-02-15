@@ -54,6 +54,15 @@ function fix_points(data) {
   });
 }
 
+function add_raw_points(data) {
+  return data.map(item => {
+    const points_raw = JSON.stringify(item.points);
+    return R.merge(item, {
+      points_raw
+    });
+  });
+}
+
 function init(data) {
   const elm = document.getElementById('render-port');
 
@@ -298,18 +307,17 @@ function init(data) {
             });
           });
           this.pointSetsReal = fixedPointSets;
-          console.log(JSON.stringify(fixedPointSets));
+          // console.log(JSON.stringify(fixedPointSets));
+          update_scene(fixedPointSets);
         },
         deep: true,
       }
     },
     computed: {
       fullset: {
-        // getter
         get: function () {
           return JSON.stringify(this.pointSets);
         },
-        // setter
         set: function (newValue) {
           this.pointSets = JSON.parse(newValue)
         }
@@ -317,30 +325,38 @@ function init(data) {
     }
   });
 
+  var current_objects = [];
+  const update_scene_ = (data) => {
+    current_objects.forEach(obj => scene.remove(obj));
+
+    current_objects = fix_points(data).map(item => {
+      switch (item.type) {
+        case 'cloud':
+          return add_cloud(item);
+        case 'path':
+          return add_path(item);
+        case 'vector':
+          return add_vector(item);
+        default:
+          console.warn('Un-used item');
+          console.warn(item);
+          const obj = new THREE.Object3D();
+          scene.add(obj);
+          return obj;
+      }
+    });
+  };
+  const update_scene = _.debounce(update_scene_, 1250);
 
   fetch('points.json')
     .then((response) => {
       return response.json();
     }).then((json) => {
-      console.log('parsed json', json);
-      vm.fullset = JSON.stringify(json);
-      console.log(fix_points(json));
-      fix_points(json).map(item => {
-        switch (item.type) {
-          case 'cloud':
-            return add_cloud(item);
-          case 'path':
-            return add_path(item);
-          case 'vector':
-            return add_vector(item);
-          default:
-            console.warn('Un-used item');
-            console.warn(item);
-            const obj = new THREE.Object3D();
-            scene.add(obj);
-            return obj;
-        }
-      })
+      // console.log('parsed json', json);
+      vm.fullset = JSON.stringify(add_raw_points(json));
+      // console.log(fix_points(json));
+      update_scene(json);
+
     }).catch((ex) => {
       console.error('parsing failed')
       console.error(ex)
