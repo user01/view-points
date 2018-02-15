@@ -110,7 +110,7 @@ function init(data) {
         data.points[i][1],
         data.points[i][2],
       );
-      if (Math.random() > threshold){
+      if (Math.random() > threshold) {
         geom.vertices.push(particle);
       }
     }
@@ -207,6 +207,31 @@ function init(data) {
   // elm.addEventListener('mousemove', onDocumentMouseMove, false);
   render();
   animate();
+
+  const filters = ['a', 'b', 'c'];
+  const colors = [
+    {
+      options: ["red", "yellow", "green"],
+      selectedOption: "yellow"
+    }
+  ];
+
+  const vm = new Vue({
+    el: '#vue-forms',
+    data: {
+      items: [
+        {
+          firstName: 'Mittens',
+          visible: true,
+          selectedType: "cloud"
+        },
+        {
+          firstName: 'Teal',
+          selectedType: "cloud"
+        }
+      ]
+    }
+  })
 
 
   fetch('points.json')

@@ -5,14 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Renders</title>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/chance/1.0.8/chance.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.24.1/ramda.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
 
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -23,10 +24,38 @@
       <div class="col-8 block" id="render-port">
       </div>
       <div class="col">
-          <div class="form-group">
-            <label for="mainTextarea">Points JSON</label>
-            <textarea class="form-control" id="mainTextarea" rows="3">[]</textarea>
+
+        <div >
+          <div id="vue-forms">
+            <template v-for="item in items">
+              <p>{{ item.firstName }}</p>
+
+              <input v-model="item.name" placeholder="name">
+              <input v-model="item.color0" placeholder="#3A015C">
+              <input v-model="item.size" placeholder="0.2" type="number" min="0.05" max="2.0" step="0.1">
+
+              <span>Type: {{ item.selectedType }}</span>
+              <select v-model="item.selectedType">
+                <!-- <option disabled value="">Please select one</option> -->
+                <option>cloud</option>
+                <option>path</option>
+                <option>vector</option>
+              </select>
+              <p>
+                <input type="checkbox" id="checkbox" v-model="item.visible">
+                <label for="checkbox">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
+              </p>
+              <textarea v-model="item.message" placeholder="json of points"></textarea>
+              <hr />
+
+              <!-- <div class="form-group">
+                <label for="mainTextarea">Points JSON</label>
+                <textarea class="form-control" id="mainTextarea" rows="3">[]</textarea>
+              </div> -->
+            </template>
           </div>
+        </div>
+
       </div>
     </div>
   </div>
