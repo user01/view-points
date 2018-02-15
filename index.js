@@ -276,7 +276,7 @@ function init(data) {
         }
       }
     }
-  })
+  });
 
 
   fetch('points.json')

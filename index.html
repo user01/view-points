@@ -28,8 +28,8 @@
         <div >
           <div id="vue-forms">
             <button v-on:click="addNewPointSet">Add Point Set</button>
-            <template v-for="item in pointSets">
-              <p>{{ item.name }}</p>
+            <template v-for="(item, index) in pointSets">
+              <p>Name: {{ item.name }}</p>
 
               <input v-model="item.name" placeholder="name">
               <input v-model="item.color0" placeholder="#3A015C">
@@ -47,6 +47,7 @@
                 <label for="checkbox">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
               </p>
               <textarea v-model="item.points_raw" placeholder="json of points"></textarea>
+              <button v-on:click="pointSets.splice(index, 1)">X</button>
               <hr />
 
               <!-- <div class="form-group">
