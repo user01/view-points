@@ -211,16 +211,18 @@ function init(data) {
   const vm = new Vue({
     el: '#vue-forms',
     data: {
-      pointSets: []
+      pointSets: [],
+      pointSetsReal: [],
     },
     methods: {
       addNewPointSet: function () {
         this.pointSets.push({
-          name: 'Mittens',
+          name: 'Points',
           visible: true,
           size: 0.1,
           color0: "#FF00FF",
           points_raw: "[]",
+          points: [],
           selectedType: "cloud"
         });
       }
@@ -230,6 +232,34 @@ function init(data) {
       pointSets: {
         handler(newpointSets, oldpointSets) {
           console.log(newpointSets);
+          // TODO: Update THREE.js scene
+          // TODO: Debounce this call
+          const fixedPointSets = newpointSets.map(set => {
+            // try to parse the points
+            // TODO: handle CSV
+            // TODO: handle TSV
+            // TODO: handle python strings
+            try {
+              var points = JSON.parse(set.points_raw);
+              if (!R.is(Array, points)) {
+                throw 'not an array'
+              }
+              points.forEach(elm => {
+                if (!R.is(Array, elm)) {
+                  throw 'not an array'
+                }
+                if (elm.length != 3) {
+                  throw 'invalid array length'
+                }
+              })
+
+            } catch (e) {
+              var points = [];
+            }
+            return R.merge(set, {points});
+          });
+          this.pointSetsReal = fixedPointSets;
+          console.log(fixedPointSets);
         },
         deep: true,
       }
