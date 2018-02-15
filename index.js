@@ -1,5 +1,3 @@
-
-
 // fetch('data.json')
 //   .then((response) => {
 //     // console.log(response);
@@ -50,7 +48,18 @@ function fix_points(data) {
       y_scale(point[1]),
       z_scale(point[2])
     ]);
-    return R.merge(item, { points });
+    return R.merge(item, {
+      points
+    });
+  });
+}
+
+function add_raw_points(data) {
+  return data.map(item => {
+    const points_raw = JSON.stringify(item.points);
+    return R.merge(item, {
+      points_raw
+    });
   });
 }
 
@@ -113,16 +122,21 @@ function init(data) {
     });
     const max_points_per_cloud = 500;
     const threshold = Math.min(max_points_per_cloud / data.points.length, 1);
+    console.log(threshold);
+    console.log(data.points.length);
+    var count = 0;
     for (var i = 0; i < data.points.length; i++) {
       var particle = new THREE.Vector3(
         data.points[i][0],
         data.points[i][1],
         data.points[i][2],
       );
-      if (Math.random() > threshold) {
+      if (Math.random() > 1 - threshold) {
         geom.vertices.push(particle);
+        count++;
       }
     }
+    console.log(count);
     const cloud = new THREE.Points(geom, material);
     cloud.name = `cloud_${data.name}`;
     scene.add(cloud);
@@ -142,11 +156,12 @@ function init(data) {
     });
     const spline_tube = new THREE.CatmullRomCurve3(data.points.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
     const geometry_tube = new THREE.TubeGeometry(spline_tube,
-      64,  // tubularSegments
+      64, // tubularSegments
       data.size, // radius
-      12,  // radialSegments
+      12, // radialSegments
       false);
     const mesh = new THREE.Mesh(geometry_tube, tube_material);
+    mesh.name = `path_${data.name}`;
     scene.add(mesh);
     return mesh;
   };
@@ -164,9 +179,9 @@ function init(data) {
     pairs.map(pair_set => {
       const spline_tube = new THREE.CatmullRomCurve3(pair_set.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
       const geometry_tube = new THREE.TubeGeometry(spline_tube,
-        8,  // tubularSegments
+        8, // tubularSegments
         data.size, // radius
-        8,  // radialSegments
+        8, // radialSegments
         false);
       const mesh = new THREE.Mesh(geometry_tube, tube_material);
       root.add(mesh);
@@ -176,22 +191,26 @@ function init(data) {
   };
 
   const header_label = document.getElementById("header-label")
+
   function render() {
 
     raycaster.setFromCamera(mouse, camera);
+    // raycaster.setFromCamera(new THREE.Vector2(1, 1), camera);
 
     var intersects = R.pipe(
       R.filter(o => o.object.name.length > 2),
+      // R.filter(o => !o.object.name.includes('cloud')),
       R.sortBy(o => o.distance)
     )(raycaster.intersectObjects(
       scene.children
     ));
 
     if (intersects.length > 0) {
-      if (header_label.innerHTML != intersects[0].object.name){
-        console.log(intersects[0].object.name);
-      }
-      header_label.innerHTML = intersects[0].object.name;
+      // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
+      header_label.innerHTML = `Under pointer: ${intersects[0].object.name}`;
+    } else {
+      // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} None`;
+      header_label.innerHTML = "";
     }
     renderer.render(scene, camera);
     stats.update();
@@ -223,10 +242,9 @@ function init(data) {
 
   function onDocumentMouseMove(event) {
     event.preventDefault();
-    // console.log(event);
-    // console.log(mouse.x, mouse.y);
-    mouse.x = (event.clientX / elm.clientWidth) * 2 - 1;
-    mouse.y = - (event.clientY / elm.clientHeight) * 2 + 1;
+    const offset = elm.getBoundingClientRect();
+    mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
+    mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;
   }
 
   elm.appendChild(renderer.domElement);
@@ -251,7 +269,7 @@ function init(data) {
           color0: "#FF00FF",
           points_raw: "[]",
           points: [],
-          selectedType: "cloud"
+          type: "cloud"
         });
       }
     },
@@ -259,7 +277,7 @@ function init(data) {
       // whenever question changes, this function will run
       pointSets: {
         handler(newpointSets, oldpointSets) {
-          console.log(newpointSets);
+          // console.log(newpointSets);
           // TODO: Update THREE.js scene
           // TODO: Debounce this call
           const fixedPointSets = newpointSets.map(set => {
@@ -284,21 +302,22 @@ function init(data) {
             } catch (e) {
               var points = [];
             }
-            return R.merge(set, { points });
+            return R.merge(set, {
+              points
+            });
           });
           this.pointSetsReal = fixedPointSets;
-          console.log(fixedPointSets);
+          // console.log(JSON.stringify(fixedPointSets));
+          update_scene(fixedPointSets);
         },
         deep: true,
       }
     },
     computed: {
       fullset: {
-        // getter
         get: function () {
           return JSON.stringify(this.pointSets);
         },
-        // setter
         set: function (newValue) {
           this.pointSets = JSON.parse(newValue)
         }
@@ -306,30 +325,35 @@ function init(data) {
     }
   });
 
+  var current_objects = [];
+  const update_scene_ = (data) => {
+    current_objects.forEach(obj => scene.remove(obj));
+
+    current_objects = fix_points(data).map(item => {
+      switch (item.type) {
+        case 'cloud':
+          return add_cloud(item);
+        case 'path':
+          return add_path(item);
+        case 'vector':
+          return add_vector(item);
+        default:
+          console.warn('Un-used item');
+          console.warn(item);
+          const obj = new THREE.Object3D();
+          scene.add(obj);
+          return obj;
+      }
+    });
+  };
+  const update_scene = _.debounce(update_scene_, 1250);
 
   fetch('points.json')
     .then((response) => {
-      // console.log(response);
       return response.json();
     }).then((json) => {
-      console.log('parsed json', json);
-      console.log(fix_points(json));
-      fix_points(json).map(item => {
-        switch (item.type) {
-          case 'cloud':
-            return add_cloud(item);
-          case 'path':
-            return add_path(item);
-          case 'vector':
-            return add_vector(item);
-          default:
-            console.warn('Un-used item');
-            console.warn(item);
-            const obj = new THREE.Object3D();
-            scene.add(obj);
-            return obj;
-        }
-      })
+      // console.log('parsed json', json);
+      vm.fullset = JSON.stringify(add_raw_points(json));
     }).catch((ex) => {
       console.error('parsing failed')
       console.error(ex)

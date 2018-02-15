@@ -19,12 +19,10 @@
 </head>
 
 <body>
-  <h3>View points</h3>
+
+  <h3>View points <span id="header-label"></span></h3>
   <div class="container">
     <div class="row">
-      <h3>Object:
-        <span id="header-label"></span>
-      </h3>
       <div class="col-8 block" id="render-port">
       </div>
       <div class="col">
@@ -39,8 +37,8 @@
               <input v-model="item.color0" placeholder="#3A015C">
               <input v-model="item.size" placeholder="0.2" type="number" min="0.05" max="2.0" step="0.1">
 
-              <span>Type: {{ item.selectedType }}</span>
-              <select v-model="item.selectedType">
+              <span>Type: {{ item.type }}</span>
+              <select v-model="item.type">
                 <!-- <option disabled value="">Please select one</option> -->
                 <option>cloud</option>
                 <option>path</option>
