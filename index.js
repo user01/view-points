@@ -41,7 +41,7 @@ function fix_points(data) {
       y_scale(point[1]),
       z_scale(point[2])
     ]);
-    return R.merge(item, {points});
+    return R.merge(item, { points });
   });
 }
 
@@ -108,45 +108,15 @@ function init(data) {
         data.points[i][1],
         data.points[i][2],
       );
-      geom.vertices.push(particle);
+      if (Math.random() > 0.8){
+        geom.vertices.push(particle);
+      }
     }
     const cloud = new THREE.Points(geom, material);
     cloud.name = `cloud_${data.name}`;
     scene.add(cloud);
     return cloud;
   }
-
-  // add_cloud({
-  //   size: 0.4,
-  //   color: 0x0000ff,
-  //   alphaTest: 0.5,
-  //   points: R.pipe(
-  //     R.range(0),
-  //     R.map(elm => {
-  //       return [
-  //         (elm + 1) * Math.random(),
-  //         (elm + 1) * Math.random(),
-  //         (elm + 1) * Math.random(),
-  //       ]
-  //     })
-  //   )(5)
-  // });
-
-  // add_cloud({
-  //   size: 0.4,
-  //   color: 0x00ffff,
-  //   alphaTest: 0.5,
-  //   points: R.pipe(
-  //     R.range(0),
-  //     R.map(elm => {
-  //       return [
-  //         (elm + 1) * Math.random(),
-  //         (elm + 1) * Math.random(),
-  //         (elm + 1) * Math.random(),
-  //       ]
-  //     })
-  //   )(8)
-  // });
 
 
   const add_path = (data) => {
@@ -160,27 +130,15 @@ function init(data) {
       // color: 0xff00ff
     });
     const spline_tube = new THREE.CatmullRomCurve3(data.points.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
-    const geometry_tube = new THREE.TubeGeometry(spline_tube, Math.ceil(1024 * data.radius), data.radius, Math.ceil(128 * data.radius), false);
+    const geometry_tube = new THREE.TubeGeometry(spline_tube,
+      64,  // tubularSegments
+      data.size, // radius
+      12,  // radialSegments
+      false);
     const mesh = new THREE.Mesh(geometry_tube, tube_material);
     scene.add(mesh);
     return mesh;
   };
-  // const test_tube = add_path({
-  //   radius: 0.1,
-  //   points: R.pipe(
-  //     R.range(0),
-  //     R.map(elm => {
-  //       return [
-  //         (elm + 1) * Math.random(),
-  //         (elm + 1) * Math.random(),
-  //         (elm + 1) * Math.random(),
-  //       ]
-  //     })
-  //   )(8)
-  // });
-  // scene.add(test_tube);
-  // test_tube.visible = true;
-
 
   function render() {
     renderer.render(scene, camera);
