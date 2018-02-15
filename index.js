@@ -14,6 +14,36 @@
 //   });
 
 const colors = ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#808080", "#FFFFFF", "#000000"];
+const size = 5;
+const range = [-size, size];
+
+function fix_points(data) {
+  const points = R.pipe(
+    R.map(R.prop('points')),
+    R.unnest,
+  )(data);
+
+  const x_scale = d3.scaleLinear()
+    .domain(d3.extent(points, R.nth(0)))
+    .range(range);
+
+  const y_scale = d3.scaleLinear()
+    .domain(d3.extent(points, R.nth(1)))
+    .range(range);
+
+  const z_scale = d3.scaleLinear()
+    .domain(d3.extent(points, R.nth(2)))
+    .range(range);
+
+  return data.map(item => {
+    const points = item.points.map(point => [
+      x_scale(point[0]),
+      y_scale(point[1]),
+      z_scale(point[2])
+    ]);
+    return R.merge(item, {points});
+  });
+}
 
 function init(data) {
   const elm = document.getElementById('render-port');
@@ -60,15 +90,16 @@ function init(data) {
 
   const parent = new THREE.Object3D();
 
-  const load_points = (data) => {
+  const add_cloud = (data) => {
+    console.log(`Adding cloud ${data.name}`)
 
     var geom = new THREE.Geometry();
     var material = new THREE.PointsMaterial({
       size: data.size,
-      transparent: data.alphaTest < 1,
-      opacity: data.alphaTest,
-      color: data.color,
-      alphaTest: data.alphaTest,
+      transparent: true,
+      opacity: 0.55,
+      color: data.color0,
+      alphaTest: 0.5,
       map: sprite = new THREE.TextureLoader().load("disc.png")
     });
     for (var i = 0; i < data.points.length; i++) {
@@ -80,71 +111,75 @@ function init(data) {
       geom.vertices.push(particle);
     }
     const cloud = new THREE.Points(geom, material);
-    cloud.name = `particles${data.color}`;
+    cloud.name = `cloud_${data.name}`;
     scene.add(cloud);
     return cloud;
   }
 
-  load_points({
-    size: 0.4,
-    color: 0x0000ff,
-    alphaTest: 0.5,
-    points: R.pipe(
-      R.range(0),
-      R.map(elm => {
-        return [
-          (elm + 1) * Math.random(),
-          (elm + 1) * Math.random(),
-          (elm + 1) * Math.random(),
-        ]
-      })
-    )(5)
-  });
+  // add_cloud({
+  //   size: 0.4,
+  //   color: 0x0000ff,
+  //   alphaTest: 0.5,
+  //   points: R.pipe(
+  //     R.range(0),
+  //     R.map(elm => {
+  //       return [
+  //         (elm + 1) * Math.random(),
+  //         (elm + 1) * Math.random(),
+  //         (elm + 1) * Math.random(),
+  //       ]
+  //     })
+  //   )(5)
+  // });
 
-  load_points({
-    size: 0.4,
-    color: 0x00ffff,
-    alphaTest: 0.5,
-    points: R.pipe(
-      R.range(0),
-      R.map(elm => {
-        return [
-          (elm + 1) * Math.random(),
-          (elm + 1) * Math.random(),
-          (elm + 1) * Math.random(),
-        ]
-      })
-    )(8)
-  });
+  // add_cloud({
+  //   size: 0.4,
+  //   color: 0x00ffff,
+  //   alphaTest: 0.5,
+  //   points: R.pipe(
+  //     R.range(0),
+  //     R.map(elm => {
+  //       return [
+  //         (elm + 1) * Math.random(),
+  //         (elm + 1) * Math.random(),
+  //         (elm + 1) * Math.random(),
+  //       ]
+  //     })
+  //   )(8)
+  // });
 
 
-  const pts_to_spline = (coors, mat, radius=0.1) => {
-    if (coors.length < 1) {
+  const add_path = (data) => {
+    if (data.points.length < 1) {
       return new THREE.Object3D();
     }
-    const spline_tube = new THREE.CatmullRomCurve3(coors.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
-    const geometry_tube = new THREE.TubeGeometry(spline_tube, Math.ceil(1024 * radius), radius, Math.ceil(128 * radius), false);
-    const mesh = new THREE.Mesh(geometry_tube, mat);
-    mesh.visible = false;
+    const tube_material = new THREE.MeshPhongMaterial({
+      // wireframe: true,
+      side: THREE.DoubleSide,
+      color: data.color0
+      // color: 0xff00ff
+    });
+    const spline_tube = new THREE.CatmullRomCurve3(data.points.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
+    const geometry_tube = new THREE.TubeGeometry(spline_tube, Math.ceil(1024 * data.radius), data.radius, Math.ceil(128 * data.radius), false);
+    const mesh = new THREE.Mesh(geometry_tube, tube_material);
+    scene.add(mesh);
     return mesh;
   };
-  const tube_material = new THREE.MeshPhongMaterial({
-    // wireframe: true,
-    side: THREE.DoubleSide,
-    color: 0xff00ff
-  });
-  const test_tube = pts_to_spline(R.pipe(
-    R.range(0),
-    R.map(elm => {
-      return [
-        (elm + 1) * Math.random(),
-        (elm + 1) * Math.random(),
-        (elm + 1) * Math.random(),
-      ]
-    })
-  )(8), tube_material);
-  scene.add(test_tube);
-  test_tube.visible = true;
+  // const test_tube = add_path({
+  //   radius: 0.1,
+  //   points: R.pipe(
+  //     R.range(0),
+  //     R.map(elm => {
+  //       return [
+  //         (elm + 1) * Math.random(),
+  //         (elm + 1) * Math.random(),
+  //         (elm + 1) * Math.random(),
+  //       ]
+  //     })
+  //   )(8)
+  // });
+  // scene.add(test_tube);
+  // test_tube.visible = true;
 
 
   function render() {
@@ -188,6 +223,27 @@ function init(data) {
   // elm.addEventListener('mousemove', onDocumentMouseMove, false);
   render();
   animate();
+
+
+  fetch('points.json')
+    .then((response) => {
+      // console.log(response);
+      return response.json();
+    }).then((json) => {
+      console.log('parsed json', json);
+      console.log(fix_points(json));
+      fix_points(json).map(item => {
+        switch (item.type) {
+          case 'cloud':
+            return add_cloud(item);
+          case 'path':
+            return add_path(item);
+        }
+      })
+    }).catch((ex) => {
+      console.error('parsing failed')
+      console.error(ex)
+    });
 }
 
 init();
