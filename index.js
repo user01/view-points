@@ -208,28 +208,43 @@ function init(data) {
   render();
   animate();
 
-  const filters = ['a', 'b', 'c'];
-  const colors = [
-    {
-      options: ["red", "yellow", "green"],
-      selectedOption: "yellow"
-    }
-  ];
-
   const vm = new Vue({
     el: '#vue-forms',
     data: {
-      items: [
-        {
-          firstName: 'Mittens',
+      pointSets: []
+    },
+    methods: {
+      addNewPointSet: function () {
+        this.pointSets.push({
+          name: 'Mittens',
           visible: true,
+          size: 0.1,
+          color0: "#FF00FF",
+          points_raw: "[]",
           selectedType: "cloud"
+        });
+      }
+    },
+    watch: {
+      // whenever question changes, this function will run
+      pointSets: {
+        handler(newpointSets, oldpointSets) {
+          console.log(newpointSets);
         },
-        {
-          firstName: 'Teal',
-          selectedType: "cloud"
+        deep: true,
+      }
+    },
+    computed: {
+      fullset: {
+        // getter
+        get: function () {
+          return JSON.stringify(this.pointSets);
+        },
+        // setter
+        set: function (newValue) {
+          this.pointSets = JSON.parse(newValue)
         }
-      ]
+      }
     }
   })
 
