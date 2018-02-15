@@ -197,14 +197,11 @@ function init(data) {
     ));
 
     if (intersects.length > 0) {
-      // if (header_label.innerHTML != intersects[0].object.name) {
-      //   console.log(intersects[0].object.name);
-      // }
-      // header_label.innerHTML = intersects[0].object.name;
-      header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
-      console.log(intersects[0].object.name)
+      // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
+      header_label.innerHTML = `Under pointer: ${intersects[0].object.name}`;
     } else {
-      header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} None`;
+      // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} None`;
+      header_label.innerHTML = "";
     }
     renderer.render(scene, camera);
     stats.update();
@@ -236,17 +233,9 @@ function init(data) {
 
   function onDocumentMouseMove(event) {
     event.preventDefault();
-    // console.log(event);
-    // console.log(mouse.x, mouse.y);
-    // mouse.x = (event.clientX / elm.clientWidth) * 2 - 1;
-    // mouse.y = - (event.clientY / elm.clientHeight) * 2 + 1;
-    var offset = elm.getBoundingClientRect();
-    // mouse.x = (event.clientX / elm.clientWidth) * 2 - 2;
-    // mouse.y = -(event.clientY / elm.clientHeight) * 2 + 1.1;
+    const offset = elm.getBoundingClientRect();
     mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
     mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;
-    // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)}`;
-    // header_label.innerHTML = `${event.clientX} x ${event.clientY} ^^ ${elm.clientWidth} x ${elm.clientHeight}`;
   }
 
   elm.appendChild(renderer.domElement);
@@ -279,7 +268,7 @@ function init(data) {
       // whenever question changes, this function will run
       pointSets: {
         handler(newpointSets, oldpointSets) {
-          console.log(newpointSets);
+          // console.log(newpointSets);
           // TODO: Update THREE.js scene
           // TODO: Debounce this call
           const fixedPointSets = newpointSets.map(set => {
@@ -331,10 +320,10 @@ function init(data) {
 
   fetch('points.json')
     .then((response) => {
-      // console.log(response);
       return response.json();
     }).then((json) => {
       console.log('parsed json', json);
+      vm.fullset = JSON.stringify(json);
       console.log(fix_points(json));
       fix_points(json).map(item => {
         switch (item.type) {
