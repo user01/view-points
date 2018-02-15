@@ -97,9 +97,9 @@ function init(data) {
     var material = new THREE.PointsMaterial({
       size: data.size,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.2,
       color: data.color0,
-      alphaTest: 0.5,
+      alphaTest: 0.2,
       map: sprite = new THREE.TextureLoader().load("disc.png")
     });
     const max_points_per_cloud = 500;
@@ -140,6 +140,30 @@ function init(data) {
     const mesh = new THREE.Mesh(geometry_tube, tube_material);
     scene.add(mesh);
     return mesh;
+  };
+
+  const add_vector = (data) => {
+    if (data.points.length < 1) {
+      return new THREE.Object3D();
+    }
+    const root = new THREE.Object3D();
+    const tube_material = new THREE.MeshPhongMaterial({
+      side: THREE.DoubleSide,
+      color: data.color0
+    });
+    const pairs = R.splitEvery(2, data.points);
+    pairs.map(pair_set => {
+      const spline_tube = new THREE.CatmullRomCurve3(pair_set.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
+      const geometry_tube = new THREE.TubeGeometry(spline_tube,
+        8,  // tubularSegments
+        data.size, // radius
+        8,  // radialSegments
+        false);
+      const mesh = new THREE.Mesh(geometry_tube, tube_material);
+      root.add(mesh);
+    });
+    scene.add(root);
+    return root;
   };
 
   function render() {
@@ -198,6 +222,14 @@ function init(data) {
             return add_cloud(item);
           case 'path':
             return add_path(item);
+          case 'vector':
+            return add_vector(item);
+          default:
+            console.warn('Un-used item');
+            console.warn(item);
+            const obj = new THREE.Object3D();
+            scene.add(obj);
+            return obj;
         }
       })
     }).catch((ex) => {
