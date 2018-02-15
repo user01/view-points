@@ -36,11 +36,11 @@ function fix_points(data) {
     .domain([x_extent[0], x_extent[0] + diff])
     .range(range);
 
-    const y_scale = d3.scaleLinear()
+  const y_scale = d3.scaleLinear()
     .domain([y_extent[0], y_extent[0] + diff])
     .range(range);
 
-    const z_scale = d3.scaleLinear()
+  const z_scale = d3.scaleLinear()
     .domain([z_extent[0], z_extent[0] + diff])
     .range(range);
 
@@ -175,7 +175,24 @@ function init(data) {
     return root;
   };
 
+  const header_label = document.getElementById("header-label")
   function render() {
+
+    raycaster.setFromCamera(mouse, camera);
+
+    var intersects = R.pipe(
+      R.filter(o => o.object.name.length > 2),
+      R.sortBy(o => o.distance)
+    )(raycaster.intersectObjects(
+      scene.children
+    ));
+
+    if (intersects.length > 0) {
+      if (header_label.innerHTML != intersects[0].object.name){
+        console.log(intersects[0].object.name);
+      }
+      header_label.innerHTML = intersects[0].object.name;
+    }
     renderer.render(scene, camera);
     stats.update();
   }
@@ -204,16 +221,18 @@ function init(data) {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(elm.clientWidth, elm.clientHeight);
 
-  // function onDocumentMouseMove(event) {
-  //   event.preventDefault();
-  //   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  //   mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-  // }
+  function onDocumentMouseMove(event) {
+    event.preventDefault();
+    // console.log(event);
+    // console.log(mouse.x, mouse.y);
+    mouse.x = (event.clientX / elm.clientWidth) * 2 - 1;
+    mouse.y = - (event.clientY / elm.clientHeight) * 2 + 1;
+  }
 
   elm.appendChild(renderer.domElement);
 
   window.addEventListener('resize', onWindowResize, false);
-  // elm.addEventListener('mousemove', onDocumentMouseMove, false);
+  elm.addEventListener('mousemove', onDocumentMouseMove, false);
   render();
   animate();
 
@@ -265,7 +284,7 @@ function init(data) {
             } catch (e) {
               var points = [];
             }
-            return R.merge(set, {points});
+            return R.merge(set, { points });
           });
           this.pointSetsReal = fixedPointSets;
           console.log(fixedPointSets);
