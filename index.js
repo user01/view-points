@@ -1,5 +1,3 @@
-
-
 // fetch('data.json')
 //   .then((response) => {
 //     // console.log(response);
@@ -50,7 +48,9 @@ function fix_points(data) {
       y_scale(point[1]),
       z_scale(point[2])
     ]);
-    return R.merge(item, { points });
+    return R.merge(item, {
+      points
+    });
   });
 }
 
@@ -147,11 +147,12 @@ function init(data) {
     });
     const spline_tube = new THREE.CatmullRomCurve3(data.points.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
     const geometry_tube = new THREE.TubeGeometry(spline_tube,
-      64,  // tubularSegments
+      64, // tubularSegments
       data.size, // radius
-      12,  // radialSegments
+      12, // radialSegments
       false);
     const mesh = new THREE.Mesh(geometry_tube, tube_material);
+    mesh.name = `path_${data.name}`;
     scene.add(mesh);
     return mesh;
   };
@@ -169,9 +170,9 @@ function init(data) {
     pairs.map(pair_set => {
       const spline_tube = new THREE.CatmullRomCurve3(pair_set.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
       const geometry_tube = new THREE.TubeGeometry(spline_tube,
-        8,  // tubularSegments
+        8, // tubularSegments
         data.size, // radius
-        8,  // radialSegments
+        8, // radialSegments
         false);
       const mesh = new THREE.Mesh(geometry_tube, tube_material);
       root.add(mesh);
@@ -181,22 +182,29 @@ function init(data) {
   };
 
   const header_label = document.getElementById("header-label")
+
   function render() {
 
     raycaster.setFromCamera(mouse, camera);
+    // raycaster.setFromCamera(new THREE.Vector2(1, 1), camera);
 
     var intersects = R.pipe(
       R.filter(o => o.object.name.length > 2),
+      // R.filter(o => !o.object.name.includes('cloud')),
       R.sortBy(o => o.distance)
     )(raycaster.intersectObjects(
       scene.children
     ));
 
     if (intersects.length > 0) {
-      if (header_label.innerHTML != intersects[0].object.name){
-        console.log(intersects[0].object.name);
-      }
-      header_label.innerHTML = intersects[0].object.name;
+      // if (header_label.innerHTML != intersects[0].object.name) {
+      //   console.log(intersects[0].object.name);
+      // }
+      // header_label.innerHTML = intersects[0].object.name;
+      header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
+      console.log(intersects[0].object.name)
+    } else {
+      header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} None`;
     }
     renderer.render(scene, camera);
     stats.update();
@@ -230,8 +238,15 @@ function init(data) {
     event.preventDefault();
     // console.log(event);
     // console.log(mouse.x, mouse.y);
-    mouse.x = (event.clientX / elm.clientWidth) * 2 - 1;
-    mouse.y = - (event.clientY / elm.clientHeight) * 2 + 1;
+    // mouse.x = (event.clientX / elm.clientWidth) * 2 - 1;
+    // mouse.y = - (event.clientY / elm.clientHeight) * 2 + 1;
+    var offset = elm.getBoundingClientRect();
+    // mouse.x = (event.clientX / elm.clientWidth) * 2 - 2;
+    // mouse.y = -(event.clientY / elm.clientHeight) * 2 + 1.1;
+    mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
+    mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;
+    // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)}`;
+    // header_label.innerHTML = `${event.clientX} x ${event.clientY} ^^ ${elm.clientWidth} x ${elm.clientHeight}`;
   }
 
   elm.appendChild(renderer.domElement);
@@ -289,10 +304,12 @@ function init(data) {
             } catch (e) {
               var points = [];
             }
-            return R.merge(set, { points });
+            return R.merge(set, {
+              points
+            });
           });
           this.pointSetsReal = fixedPointSets;
-          console.log(fixedPointSets);
+          console.log(JSON.stringify(fixedPointSets));
         },
         deep: true,
       }
