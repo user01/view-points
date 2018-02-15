@@ -260,7 +260,7 @@ function init(data) {
           color0: "#FF00FF",
           points_raw: "[]",
           points: [],
-          selectedType: "cloud"
+          type: "cloud"
         });
       }
     },
