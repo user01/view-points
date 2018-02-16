@@ -349,7 +349,7 @@ function init(data) {
           }),
         )(4);
         this.pointSets.push({
-          name: 'Points',
+          name: `Points-${this.pointSets.length}`,
           visible: true,
           size: 1.25,
           color0: chance.color({ format: 'hex' }),

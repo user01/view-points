@@ -43,8 +43,10 @@
             </div>
           </form>
           <div id="vue-forms">
-            <button class="btn btn-primary" v-on:click="addNewPointSet">
-              <i class="fas fa-plus-circle"></i> Point Set</button>
+            <div class="form-group">
+              <button type="button" class="btn btn-primary" v-on:click="addNewPointSet">
+                <i class="fas fa-plus-circle"></i> Point Set</button>
+            </div>
             <template v-for="(item, index) in pointSets">
               <form class="border rounded pad stripe">
 
@@ -89,7 +91,7 @@
                     </div>
                   </div>
                   <div class="col-sm-6">
-                    <button class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">
+                    <button type="button" class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">
                       <i class="fas fa-times-circle"></i>
                     </button>
                   </div>
