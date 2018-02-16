@@ -512,7 +512,7 @@ function init(data) {
       R.flatten
     )(data);
   };
-  const update_scene = _.debounce(update_scene_, 2250);
+  const update_scene = _.debounce(update_scene_, 250);
 
   if (window.File && window.FileReader && window.FileList && window.Blob) {
     var fileSelected = document.getElementById('txtfiletoread');
