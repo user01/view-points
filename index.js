@@ -426,9 +426,9 @@ function init(data) {
           // TODO: Debounce this call
           const fixedPointSets = newpointSets.map(set => {
             // TODO: handle python strings
-            console.log(set.points_raw);
+            // console.log(set.points_raw);
             const points = parse_points(set.points_raw);
-            console.log(points);
+            // console.log(points);
             return R.merge(set, {
               points
             });
