@@ -1,13 +1,6 @@
-
-/* body { margin: 0; }
-canvas { width: 100%; height: 100% }
-
-#notes p {
-  font-family: monospace;
-  padding: 0.4em;
-  text-shadow: #ffffff 0 0 0.2em;
-  width: 16em;
-} */
+#vue-forms > form:nth-of-type(odd) {
+    background: #e0e0e0;
+}
 
 h3 {
   text-align: center;
@@ -26,4 +19,5 @@ h4 {
 form.pad {
   padding: 0.4em;
   margin: 0.2em;
+  margin-top: 0.6em;
 }
