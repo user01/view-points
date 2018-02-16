@@ -342,13 +342,20 @@ function init(data) {
     },
     methods: {
       addNewPointSet: function () {
+        points = R.pipe(
+          R.range(0),
+          R.map(idx => {
+            return R.range(0, 3).map(x => chance.floating({ min: -1, max: 1, fixed: 1 }))
+          }),
+        )(4);
         this.pointSets.push({
           name: 'Points',
           visible: true,
-          size: 0.1,
-          color0: "#FF00FF",
-          points_raw: "[]",
-          points: [],
+          size: 1.25,
+          color0: chance.color({ format: 'hex' }),
+          color1: chance.color({ format: 'hex' }),
+          points_raw: JSON.stringify(points, null, 2),
+          points,
           type: "cloud"
         });
       }
