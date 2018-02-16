@@ -272,7 +272,7 @@ function init(data) {
 
 
   const add_path = (data) => {
-    if (data.points.length < 1) {
+    if (data.points.length < 2) {
       return new THREE.Object3D();
     }
     const tube_material = new THREE.MeshPhongMaterial({
@@ -294,7 +294,7 @@ function init(data) {
   };
 
   const add_vector = (data) => {
-    if (!data.visible || data.points.length < 1) {
+    if (!data.visible || data.points.length < 1 || data.points.length % 2 != 0) {
       return [new THREE.Object3D()];
     }
 
@@ -390,6 +390,12 @@ function init(data) {
       pointSets: [],
     },
     methods: {
+      downloadCurrentSet: function() {
+        const text = this.fullset;
+        const filename = `points.${(new Date()).toISOString()}.json`;
+        const blob = new Blob([text], {type: "application/json;charset=utf-8"});
+        saveAs(blob, filename);
+      },
       addNewPointSet: function () {
         points = R.pipe(
           R.range(0),
