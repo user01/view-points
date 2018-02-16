@@ -1,15 +1,100 @@
-// fetch('data.json')
-//   .then((response) => {
-//     // console.log(response);
-//     // return response.json();
-//   }).then((json) => {
-//     console.log('parsed json', json)
-//     // init(json);
-//     // animate();
-//   }).catch((ex) => {
-//     console.error('parsing failed')
-//     console.error(ex)
-//   });
+
+// https://stackoverflow.com/a/14991797/2601448
+function parseCSV(str, delimiter=',') {
+  var arr = [];
+  var quote = false;  // true means we're inside a quoted field
+
+  // iterate over each character, keep track of current row and column (of the returned array)
+  for (var row = col = c = 0; c < str.length; c++) {
+    var cc = str[c], nc = str[c + 1];        // current character, next character
+    arr[row] = arr[row] || [];             // create a new row if necessary
+    arr[row][col] = arr[row][col] || '';   // create a new column (start with empty string) if necessary
+
+    // If the current character is a quotation mark, and we're inside a
+    // quoted field, and the next character is also a quotation mark,
+    // add a quotation mark to the current column and skip the next character
+    if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+
+    // If it's just one quotation mark, begin/end quoted field
+    if (cc == '"') { quote = !quote; continue; }
+
+    // If it's a comma and we're not in a quoted field, move on to the next column
+    if (cc == delimiter && !quote) { ++col; continue; }
+
+    // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
+    // and move on to the next row and move to column 0 of that new row
+    if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+
+    // If it's a newline (LF or CR) and we're not in a quoted field,
+    // move on to the next row and move to column 0 of that new row
+    if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+    if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+
+    // Otherwise, append the current character to the current column
+    arr[row][col] += cc;
+  }
+  return arr.map(line => line.map(x => +x));
+}
+
+function parse_json(points_raw){
+  try {
+    var points = JSON.parse(points_raw);
+    if (valid_point_set(points)) {
+      return points;
+    }
+  } catch (e) {}
+  return false;
+}
+function parse_csv(points_raw){
+  try {
+    var points = parseCSV(points_raw, ',');
+    if (valid_point_set(points)) {
+      return points;
+    }
+  } catch (e) {}
+  return false;
+}
+function parse_tsv(points_raw){
+  try {
+    var points = parseCSV(points_raw, '\t');
+    if (valid_point_set(points)) {
+      return points;
+    }
+  } catch (e) {}
+  return false;
+}
+
+function valid_point_set(points) {
+  if (!R.is(Array, points)) {
+    return false;
+  }
+  points.forEach(elm => {
+    if (!R.is(Array, elm)) {
+      return false;
+    }
+    if (elm.length != 3) {
+      return false;
+    }
+  })
+  return true;
+}
+
+function parse_points(points_raw) {
+  const points_json = parse_json(points_raw);
+  if (points_json != false) {
+    return points_json;
+  }
+  const points_csv = parse_csv(points_raw);
+  if (points_csv != false) {
+    console.log(points_csv);
+    return points_csv;
+  }
+  const points_tsv = parse_tsv(points_raw);
+  if (points_tsv != false) {
+    return points_tsv;
+  }
+  return [];
+}
 
 const colors = ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#808080", "#FFFFFF", "#000000"];
 const size = 5;
@@ -104,12 +189,8 @@ function init(data) {
   controls.addEventListener('change', render);
 
 
-
-
-  const parent = new THREE.Object3D();
-
   const add_cloud = (data) => {
-    console.log(`Adding cloud ${data.name}`)
+    console.log(`Adding cloud ${data.name}`);
 
     var geom = new THREE.Geometry();
     var material = new THREE.PointsMaterial({
@@ -123,7 +204,7 @@ function init(data) {
     const max_points_per_cloud = 500;
     const threshold = Math.min(max_points_per_cloud / data.points.length, 1);
     console.log(threshold);
-    console.log(data.points.length);
+    // console.log(data.points.length);
     var count = 0;
     for (var i = 0; i < data.points.length; i++) {
       var particle = new THREE.Vector3(
@@ -131,12 +212,12 @@ function init(data) {
         data.points[i][1],
         data.points[i][2],
       );
-      if (Math.random() > 1 - threshold) {
+      if (Math.random() > 1 - threshold || data.points.length < max_points_per_cloud) {
         geom.vertices.push(particle);
         count++;
       }
     }
-    console.log(count);
+    console.log(`Reduced cloud ${data.name} to ${count} points`);
     const cloud = new THREE.Points(geom, material);
     cloud.name = `cloud_${data.name}`;
     scene.add(cloud);
@@ -167,7 +248,7 @@ function init(data) {
   };
 
   const add_vector = (data) => {
-    if (data.points.length < 1) {
+    if (!data.visible || data.points.length < 1) {
       return new THREE.Object3D();
     }
     const root = new THREE.Object3D();
@@ -258,7 +339,6 @@ function init(data) {
     el: '#vue-forms',
     data: {
       pointSets: [],
-      pointSetsReal: [],
     },
     methods: {
       addNewPointSet: function () {
@@ -281,32 +361,15 @@ function init(data) {
           // TODO: Update THREE.js scene
           // TODO: Debounce this call
           const fixedPointSets = newpointSets.map(set => {
-            // try to parse the points
-            // TODO: handle CSV
-            // TODO: handle TSV
             // TODO: handle python strings
-            try {
-              var points = JSON.parse(set.points_raw);
-              if (!R.is(Array, points)) {
-                throw 'not an array'
-              }
-              points.forEach(elm => {
-                if (!R.is(Array, elm)) {
-                  throw 'not an array'
-                }
-                if (elm.length != 3) {
-                  throw 'invalid array length'
-                }
-              })
-
-            } catch (e) {
-              var points = [];
-            }
+            console.log(set.points_raw);
+            const points = parse_points(set.points_raw);
+            console.log(points);
             return R.merge(set, {
               points
             });
           });
-          this.pointSetsReal = fixedPointSets;
+          // this.pointSetsReal = fixedPointSets;
           // console.log(JSON.stringify(fixedPointSets));
           update_scene(fixedPointSets);
         },
@@ -330,6 +393,11 @@ function init(data) {
     current_objects.forEach(obj => scene.remove(obj));
 
     current_objects = fix_points(data).map(item => {
+      if (!item.visible) {
+        const obj = new THREE.Object3D();
+        scene.add(obj);
+        return obj;
+      }
       switch (item.type) {
         case 'cloud':
           return add_cloud(item);
@@ -353,7 +421,7 @@ function init(data) {
       return response.json();
     }).then((json) => {
       // console.log('parsed json', json);
-      vm.fullset = JSON.stringify(add_raw_points(json));
+      // vm.fullset = JSON.stringify(add_raw_points(json));
     }).catch((ex) => {
       console.error('parsing failed')
       console.error(ex)
