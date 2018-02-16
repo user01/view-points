@@ -288,10 +288,10 @@ function init(data) {
 
     if (intersects.length > 0) {
       // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
-      header_label.innerHTML = `Under pointer: ${intersects[0].object.name}`;
+      header_label.innerHTML = intersects[0].object.name;
     } else {
       // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} None`;
-      header_label.innerHTML = "";
+      header_label.innerHTML = "-";
     }
     renderer.render(scene, camera);
     stats.update();
