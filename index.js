@@ -71,7 +71,6 @@ function parse_json(points_raw) {
 
 function parse_numpy(points_raw) {
   if (points_raw.indexOf("array(") != 0) {
-    console.log(points_raw);
     return false;
   }
   const points_raw_json = R.pipe(
@@ -81,9 +80,6 @@ function parse_numpy(points_raw) {
     R.replace(/\.\]/g, '.0]')
   )(points_raw)
 
-
-  // .replace("array(", '').replace(')', '').replace('.,','.0,').replace('.]', '.0]');
-  console.log(points_raw_json);
   return parse_json(points_raw_json);
 }
 
@@ -267,7 +263,7 @@ function init(data) {
     }
     console.log(`Reduced cloud ${data.name} to ${count} points`);
     const cloud = new THREE.Points(geom, material);
-    cloud.name = `cloud_${data.name}`;
+    cloud.name = `Cloud ${data.name}`;
     scene.add(cloud);
     return cloud;
   }
@@ -283,7 +279,7 @@ function init(data) {
 
     const spheres = data.points.map((point, i) => {
       const sphere = new THREE.Mesh(geometry, material);
-      sphere.name = `sphere_${data.name}__${i}`;
+      sphere.name = `Sphere ${data.name} #${i}`;
       scene.add(sphere);
       sphere.position.set(data.points[i][0],
         data.points[i][1],
@@ -312,7 +308,7 @@ function init(data) {
       12, // radialSegments
       false);
     const mesh = new THREE.Mesh(geometry_tube, tube_material);
-    mesh.name = `path_${data.name}`;
+    mesh.name = `Path ${data.name}`;
     scene.add(mesh);
     return mesh;
   };
@@ -335,7 +331,7 @@ function init(data) {
         8, // radialSegments
         false);
       const mesh = new THREE.Mesh(geometry_tube, tube_material);
-      mesh.name = `vector_${data.name}${i}`;
+      mesh.name = `Vector ${data.name} #${i}`;
       scene.add(mesh);
       return mesh;
     });
@@ -361,9 +357,9 @@ function init(data) {
       // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
       header_label.innerHTML = intersects[0].object.name;
     } else {
-      if (header_label.innerHTML.indexOf("fa-spinner") < 0) {
+      if (header_label.innerHTML.indexOf("fa-binoculars ") < 0) {
         // console.log('Hammer');
-        header_label.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+        header_label.innerHTML = `<i class="fas fa-binoculars  fa-spin"></i>`;
       }
     }
     renderer.render(scene, camera);
