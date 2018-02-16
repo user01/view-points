@@ -1,34 +1,57 @@
-
 // https://stackoverflow.com/a/14991797/2601448
-function parseCSV(str, delimiter=',') {
+function parseCSV(str, delimiter = ',') {
   var arr = [];
-  var quote = false;  // true means we're inside a quoted field
+  var quote = false; // true means we're inside a quoted field
 
   // iterate over each character, keep track of current row and column (of the returned array)
   for (var row = col = c = 0; c < str.length; c++) {
-    var cc = str[c], nc = str[c + 1];        // current character, next character
-    arr[row] = arr[row] || [];             // create a new row if necessary
-    arr[row][col] = arr[row][col] || '';   // create a new column (start with empty string) if necessary
+    var cc = str[c],
+      nc = str[c + 1]; // current character, next character
+    arr[row] = arr[row] || []; // create a new row if necessary
+    arr[row][col] = arr[row][col] || ''; // create a new column (start with empty string) if necessary
 
     // If the current character is a quotation mark, and we're inside a
     // quoted field, and the next character is also a quotation mark,
     // add a quotation mark to the current column and skip the next character
-    if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+    if (cc == '"' && quote && nc == '"') {
+      arr[row][col] += cc;
+      ++c;
+      continue;
+    }
 
     // If it's just one quotation mark, begin/end quoted field
-    if (cc == '"') { quote = !quote; continue; }
+    if (cc == '"') {
+      quote = !quote;
+      continue;
+    }
 
     // If it's a comma and we're not in a quoted field, move on to the next column
-    if (cc == delimiter && !quote) { ++col; continue; }
+    if (cc == delimiter && !quote) {
+      ++col;
+      continue;
+    }
 
     // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
     // and move on to the next row and move to column 0 of that new row
-    if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+    if (cc == '\r' && nc == '\n' && !quote) {
+      ++row;
+      col = 0;
+      ++c;
+      continue;
+    }
 
     // If it's a newline (LF or CR) and we're not in a quoted field,
     // move on to the next row and move to column 0 of that new row
-    if (cc == '\n' && !quote) { ++row; col = 0; continue; }
-    if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+    if (cc == '\n' && !quote) {
+      ++row;
+      col = 0;
+      continue;
+    }
+    if (cc == '\r' && !quote) {
+      ++row;
+      col = 0;
+      continue;
+    }
 
     // Otherwise, append the current character to the current column
     arr[row][col] += cc;
@@ -36,7 +59,7 @@ function parseCSV(str, delimiter=',') {
   return arr.map(line => line.map(x => +x));
 }
 
-function parse_json(points_raw){
+function parse_json(points_raw) {
   try {
     var points = JSON.parse(points_raw);
     if (valid_point_set(points)) {
@@ -45,7 +68,8 @@ function parse_json(points_raw){
   } catch (e) {}
   return false;
 }
-function parse_csv(points_raw){
+
+function parse_csv(points_raw) {
   try {
     var points = parseCSV(points_raw, ',');
     if (valid_point_set(points)) {
@@ -54,7 +78,8 @@ function parse_csv(points_raw){
   } catch (e) {}
   return false;
 }
-function parse_tsv(points_raw){
+
+function parse_tsv(points_raw) {
   try {
     var points = parseCSV(points_raw, '\t');
     if (valid_point_set(points)) {
@@ -224,6 +249,27 @@ function init(data) {
     return cloud;
   }
 
+  const add_spheres = (data) => {
+    console.log(`Adding spheres ${data.name}`);
+
+    const material = new THREE.MeshBasicMaterial({
+      color: data.color0
+    });
+    const geometry = new THREE.SphereGeometry(data.size, 8, 8);
+
+    const spheres = data.points.map((point, i) => {
+      const sphere = new THREE.Mesh(geometry, material);
+      sphere.name = `sphere_${data.name}${i}`;
+      scene.add(sphere);
+      sphere.position.set(data.points[i][0],
+        data.points[i][1],
+        data.points[i][2]);
+      return sphere;
+    })
+
+    return spheres;
+  }
+
 
   const add_path = (data) => {
     if (data.points.length < 1) {
@@ -249,15 +295,15 @@ function init(data) {
 
   const add_vector = (data) => {
     if (!data.visible || data.points.length < 1) {
-      return new THREE.Object3D();
+      return [new THREE.Object3D()];
     }
-    const root = new THREE.Object3D();
+
     const tube_material = new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       color: data.color0
     });
     const pairs = R.splitEvery(2, data.points);
-    pairs.map(pair_set => {
+    const vectors = pairs.map((pair_set, i) => {
       const spline_tube = new THREE.CatmullRomCurve3(pair_set.map((l) => new THREE.Vector3(l[0], l[1], l[2])));
       const geometry_tube = new THREE.TubeGeometry(spline_tube,
         8, // tubularSegments
@@ -265,10 +311,11 @@ function init(data) {
         8, // radialSegments
         false);
       const mesh = new THREE.Mesh(geometry_tube, tube_material);
-      root.add(mesh);
+      mesh.name = `vector_${data.name}${i}`;
+      scene.add(mesh);
+      return mesh;
     });
-    scene.add(root);
-    return root;
+    return vectors;
   };
 
   const header_label = document.getElementById("header-label")
@@ -276,7 +323,6 @@ function init(data) {
   function render() {
 
     raycaster.setFromCamera(mouse, camera);
-    // raycaster.setFromCamera(new THREE.Vector2(1, 1), camera);
 
     var intersects = R.pipe(
       R.filter(o => o.object.name.length > 2),
@@ -286,12 +332,15 @@ function init(data) {
       scene.children
     ));
 
+    // console.log(intersects.map(i => i.object.name));
     if (intersects.length > 0) {
       // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
       header_label.innerHTML = intersects[0].object.name;
     } else {
-      // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} None`;
-      header_label.innerHTML = "-";
+      if (header_label.innerHTML.indexOf("fa-spinner") < 0) {
+        // console.log('Hammer');
+        header_label.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+      }
     }
     renderer.render(scene, camera);
     stats.update();
@@ -345,15 +394,23 @@ function init(data) {
         points = R.pipe(
           R.range(0),
           R.map(idx => {
-            return R.range(0, 3).map(x => chance.floating({ min: -1, max: 1, fixed: 1 }))
+            return R.range(0, 3).map(x => chance.floating({
+              min: -1,
+              max: 1,
+              fixed: 1
+            }))
           }),
         )(4);
         this.pointSets.push({
           name: `Points-${this.pointSets.length}`,
           visible: true,
           size: 1.25,
-          color0: chance.color({ format: 'hex' }),
-          color1: chance.color({ format: 'hex' }),
+          color0: chance.color({
+            format: 'hex'
+          }),
+          color1: chance.color({
+            format: 'hex'
+          }),
           points_raw: points.map(line => line.join(',')).join('\n'),
           points,
           type: "cloud"
@@ -399,67 +456,60 @@ function init(data) {
   const update_scene_ = (data) => {
     current_objects.forEach(obj => scene.remove(obj));
 
-    current_objects = fix_points(data).map(item => {
-      if (!item.visible) {
-        const obj = new THREE.Object3D();
-        scene.add(obj);
-        return obj;
-      }
-      switch (item.type) {
-        case 'cloud':
-          return add_cloud(item);
-        case 'path':
-          return add_path(item);
-        case 'vector':
-          return add_vector(item);
-        default:
-          console.warn('Un-used item');
-          console.warn(item);
+    current_objects = R.pipe(
+      fix_points,
+      R.map(item => {
+        if (!item.visible) {
           const obj = new THREE.Object3D();
           scene.add(obj);
           return obj;
-      }
-    });
+        }
+        switch (item.type) {
+          case 'cloud':
+            return [add_cloud(item)];
+          case 'sphere':
+            return add_spheres(item);
+          case 'path':
+            return [add_path(item)];
+          case 'vector':
+            return add_vector(item);
+          default:
+            console.warn('Un-used item');
+            console.warn(item);
+            const obj = new THREE.Object3D();
+            scene.add(obj);
+            return [obj];
+        }
+      }),
+      R.flatten
+    )(data);
   };
   const update_scene = _.debounce(update_scene_, 250);
 
-  fetch('points.json')
-    .then((response) => {
-      return response.json();
-    }).then((json) => {
-      // console.log('parsed json', json);
-      // vm.fullset = JSON.stringify(add_raw_points(json));
-    }).catch((ex) => {
-      console.error('parsing failed')
-      console.error(ex)
-    });
-
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-      var fileSelected = document.getElementById('txtfiletoread');
-      fileSelected.addEventListener('change', function (e) {
-        //Set the extension for the file
-        var fileExtension = /text.*/;
-        //Get the file object
-        var fileTobeRead = fileSelected.files[0];
-        //Check of the extension match
-        if (fileTobeRead.type == 'application/json') {
-          //Initialize the FileReader object to read the 2file
-          var fileReader = new FileReader();
-          fileReader.onload = function (e) {
-            // var fileContents = document.getElementById('filecontents');
-            // fileContents.innerText = fileReader.result;
-            // console.log(fileReader.result);
-            vm.fullset = JSON.stringify(add_raw_points(JSON.parse(fileReader.result)));
+  if (window.File && window.FileReader && window.FileList && window.Blob) {
+    var fileSelected = document.getElementById('txtfiletoread');
+    fileSelected.addEventListener('change', function (e) {
+      //Set the extension for the file
+      var fileExtension = /text.*/;
+      //Get the file object
+      var fileTobeRead = fileSelected.files[0];
+      //Check of the extension match
+      if (fileTobeRead.type == 'application/json') {
+        //Initialize the FileReader object to read the 2file
+        var fileReader = new FileReader();
+        fileReader.onload = function (e) {
+          // var fileContents = document.getElementById('filecontents');
+          // fileContents.innerText = fileReader.result;
+          // console.log(fileReader.result);
+          vm.fullset = JSON.stringify(add_raw_points(JSON.parse(fileReader.result)));
         }
         fileReader.readAsText(fileTobeRead);
-      }
-      else {
+      } else {
         alert("Must be json file");
       }
 
     }, false);
-  }
-  else {
+  } else {
     alert("Files are not supported");
   }
 }

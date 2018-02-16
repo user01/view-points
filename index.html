@@ -35,7 +35,7 @@
         <div>
           <h5>
             <i class="fas fa-mouse-pointer"></i>
-            <small class="text-muted" id="header-label">One Moment</small>
+            <small class="text-muted" id="header-label"><i class="fas fa-spinner fa-spin"></i></small>
           </h5>
 
           <div id="vue-forms">
@@ -85,6 +85,7 @@
                   <label for="type-select" class="col-sm-2 col-form-label">Type</label>
                   <div class="col-sm-10">
                     <select id="type-select" class="form-control" v-model="item.type">
+                      <option>sphere</option>
                       <option>cloud</option>
                       <option>path</option>
                       <option>vector</option>
