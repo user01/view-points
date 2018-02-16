@@ -426,6 +426,35 @@ function init(data) {
       console.error('parsing failed')
       console.error(ex)
     });
+
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      var fileSelected = document.getElementById('txtfiletoread');
+      fileSelected.addEventListener('change', function (e) {
+        //Set the extension for the file
+        var fileExtension = /text.*/;
+        //Get the file object
+        var fileTobeRead = fileSelected.files[0];
+        //Check of the extension match
+        if (fileTobeRead.type == 'application/json') {
+          //Initialize the FileReader object to read the 2file
+          var fileReader = new FileReader();
+          fileReader.onload = function (e) {
+            // var fileContents = document.getElementById('filecontents');
+            // fileContents.innerText = fileReader.result;
+            // console.log(fileReader.result);
+            vm.fullset = JSON.stringify(add_raw_points(JSON.parse(fileReader.result)));
+        }
+        fileReader.readAsText(fileTobeRead);
+      }
+      else {
+        alert("Must be json file");
+      }
+
+    }, false);
+  }
+  else {
+    alert("Files are not supported");
+  }
 }
 
 init();
