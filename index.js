@@ -354,7 +354,7 @@ function init(data) {
           size: 1.25,
           color0: chance.color({ format: 'hex' }),
           color1: chance.color({ format: 'hex' }),
-          points_raw: JSON.stringify(points, null, 2),
+          points_raw: points.map(line => line.join(',')).join('\n'),
           points,
           type: "cloud"
         });
