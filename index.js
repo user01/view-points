@@ -393,7 +393,9 @@ function init(data) {
     methods: {
       downloadCurrentSet: function() {
         const text = this.fullset;
-        const filename = `points.${(new Date()).toISOString()}.json`;
+        var fileSelected = document.getElementById('txtfiletoread');
+        const prefix = fileSelected.files.length > 0 ? fileSelected.files[0].name.replace('.json','') : 'points';
+        const filename = `${prefix}.${(new Date()).toISOString()}.json`;
         const blob = new Blob([text], {type: "application/json;charset=utf-8"});
         saveAs(blob, filename);
       },
