@@ -1,13 +1,15 @@
-#vue-forms > form.set:nth-of-type(even) {
-    background: #e0e0e0;
+div.data-col>form.set:nth-of-type(even) {
+  background: #e0e0e0;
 }
 
 h3 {
   text-align: center;
 }
+
 h4 {
   text-align: center;
 }
+
 h5 {
   white-space: nowrap;
 }
@@ -31,4 +33,17 @@ form.pad {
 
 .center {
   text-align: center;
+}
+
+no-gutters {
+  margin-right: 0.2em;
+  margin-left: 0.2em;
+}
+
+.data-col {
+  height: -webkit-calc(100vh - 30em);
+  height: -moz-calc(100vh - 30em);
+  height: calc(100vh - 30em);
+  overflow: scroll;
+
 }
