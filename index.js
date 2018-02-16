@@ -252,10 +252,11 @@ function init(data) {
   const add_spheres = (data) => {
     console.log(`Adding spheres ${data.name}`);
 
+    const count = data.size > 0.1 && data.points.length < 20 ? 32 : 8;
     const material = new THREE.MeshBasicMaterial({
       color: data.color0
     });
-    const geometry = new THREE.SphereGeometry(data.size, 8, 8);
+    const geometry = new THREE.SphereGeometry(data.size, count, count);
 
     const spheres = data.points.map((point, i) => {
       const sphere = new THREE.Mesh(geometry, material);
