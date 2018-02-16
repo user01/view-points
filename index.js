@@ -260,7 +260,7 @@ function init(data) {
 
     const spheres = data.points.map((point, i) => {
       const sphere = new THREE.Mesh(geometry, material);
-      sphere.name = `sphere_${data.name}${i}`;
+      sphere.name = `sphere_${data.name}__${i}`;
       scene.add(sphere);
       sphere.position.set(data.points[i][0],
         data.points[i][1],
