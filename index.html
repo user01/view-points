@@ -20,7 +20,9 @@
 
 <body>
 
-  <h3>View points <span id="header-label"></span></h3>
+  <h3>View points
+    <span id="header-label"></span>
+  </h3>
   <div class="container">
     <div class="row">
       <div class="col-8 block" id="render-port">
@@ -28,40 +30,68 @@
       <div class="col">
 
         <div>
-          <input type="file" id="txtfiletoread" />
+          <form>
+            <div class="form-group">
+              <label for="txtfiletoread">JSON Payload</label>
+              <input type="file" class="form-control-file" id="txtfiletoread" />
+            </div>
+          </form>
           <div id="vue-forms">
-            <button v-on:click="addNewPointSet">Add Point Set</button>
+            <button class="btn btn-primary" v-on:click="addNewPointSet">Add Point Set</button>
             <template v-for="(item, index) in pointSets">
-              <p>Name: {{ item.name }}</p>
+              <form class="border border-info">
 
-              <input v-model="item.name" placeholder="name">
-              <input v-model="item.color0" placeholder="#3A015C">
-              <input v-model="item.size" placeholder="0.2" type="number" min="0.05" max="2.0" step="0.1">
+                <div class="form-group">
+                  <label for="name-input">Group Name</label>
+                  <input id="name-input" class="form-control" v-model="item.name" placeholder="Name">
+                  <small class="form-text text-muted">Labels show up on hover.</small>
+                </div>
 
-              <span>Type: {{ item.type }}</span>
-              <select v-model="item.type">
-                <!-- <option disabled value="">Please select one</option> -->
-                <option>cloud</option>
-                <option>path</option>
-                <option>vector</option>
-              </select>
-              <p>
-                <input type="checkbox" id="checkbox" v-model="item.visible">
-                <label for="checkbox">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
-              </p>
-              <textarea v-model="item.points_raw" placeholder="json of points"></textarea>
-              <button v-on:click="pointSets.splice(index, 1)">X</button>
-              <hr />
+                <div class="form-group">
+                  <label for="color-input">Group Color</label>
+                  <input id="color-input" class="form-control" v-model="item.color0" placeholder="#3A015C">
+                  <small class="form-text text-muted">Hex label with # prefix.</small>
+                </div>
 
-              <!-- <div class="form-group">
-                <label for="mainTextarea">Points JSON</label>
-                <textarea class="form-control" id="mainTextarea" rows="3">[]</textarea>
-              </div> -->
+                <div class="form-group">
+                  <label for="color-input">Element Size</label>
+                  <input class="form-control" v-model="item.size" placeholder="0.2" type="number" min="0.05" max="2.0" step="0.1">
+                  <small class="form-text text-muted">Value is local - not scaled based on content.</small>
+                </div>
+
+
+                <div class="form-group">
+                  <label for="type-select">Group Type</label>
+                  <select id="type-select" class="form-control" v-model="item.type">
+                    <option>cloud</option>
+                    <option>path</option>
+                    <option>vector</option>
+                  </select>
+                  <small class="form-text text-muted">Note: 'vector' type must have an even number of elements.</small>
+                </div>
+
+                <div class="form-group">
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="visible-check" v-model="item.visible">
+                    <label class="form-check-label" for="visible-check">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <textarea class="form-control" v-model="item.points_raw" placeholder="json of points"></textarea>
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">X</button>
+                </div>
+              </form>
             </template>
 
-            <hr />
-            <hr />
-            <textarea v-model="fullset" placeholder="[]"></textarea>
+            <form class="border border-info">
+
+              <div>
+                <textarea class="form-control" v-model="fullset" placeholder="[]"></textarea>
+              </div>
+            </form>
 
           </div>
         </div>
