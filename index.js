@@ -69,6 +69,24 @@ function parse_json(points_raw) {
   return false;
 }
 
+function parse_numpy(points_raw) {
+  if (points_raw.indexOf("array(") != 0) {
+    console.log(points_raw);
+    return false;
+  }
+  const points_raw_json = R.pipe(
+    R.replace(/array\(/g, ''),
+    R.replace(/\)/g, ''),
+    R.replace(/\.,/g, '.0,'),
+    R.replace(/\.\]/g, '.0]')
+  )(points_raw)
+
+
+  // .replace("array(", '').replace(')', '').replace('.,','.0,').replace('.]', '.0]');
+  console.log(points_raw_json);
+  return parse_json(points_raw_json);
+}
+
 function parse_csv(points_raw) {
   try {
     var points = parseCSV(points_raw, ',');
@@ -108,6 +126,11 @@ function parse_points(points_raw) {
   const points_json = parse_json(points_raw);
   if (points_json != false) {
     return points_json;
+  }
+  const points_numpy = parse_numpy(points_raw);
+  if (points_numpy != false) {
+    console.log(points_numpy);
+    return points_numpy;
   }
   const points_csv = parse_csv(points_raw);
   if (points_csv != false) {
