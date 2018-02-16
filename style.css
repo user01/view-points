@@ -22,3 +22,8 @@ h4 {
   height: calc(100vh - 72px);
   padding: 0;
 }
+
+form.pad {
+  padding: 0.4em;
+  margin: 0.2em;
+}

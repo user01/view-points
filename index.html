@@ -43,26 +43,30 @@
             </div>
           </form>
           <div id="vue-forms">
-            <button class="btn btn-primary" v-on:click="addNewPointSet"><i class="fas fa-plus-circle"></i> Point Set</button>
+            <button class="btn btn-primary" v-on:click="addNewPointSet">
+              <i class="fas fa-plus-circle"></i> Point Set</button>
             <template v-for="(item, index) in pointSets">
-              <form class="border border-info">
+              <form class="border border-info pad">
 
-                <div class="form-group">
-                  <label for="name-input">Group Name</label>
-                  <input id="name-input" class="form-control" v-model="item.name" placeholder="Name">
-                  <small class="form-text text-muted">Labels show up on hover.</small>
+                <div class="form-group row">
+                  <label for="name-input" class="col-sm-2 col-form-label">Name</label>
+                  <div class="col-sm-10">
+                    <input id="name-input" class="form-control" v-model="item.name" placeholder="Name">
+                  </div>
                 </div>
 
-                <div class="form-group">
-                  <label for="color-input">Group Color</label>
-                  <input id="color-input" class="form-control" v-model="item.color0" placeholder="#3A015C">
-                  <small class="form-text text-muted">Hex label with # prefix.</small>
+                <div class="form-group row">
+                  <label for="color-input" class="col-sm-2 col-form-label">Color</label>
+                  <div class="col-sm-10">
+                    <input id="color-input" class="form-control" v-model="item.color0" placeholder="#3A015C">
+                  </div>
                 </div>
 
-                <div class="form-group">
-                  <label for="color-input">Element Size</label>
-                  <input class="form-control" v-model="item.size" placeholder="0.2" type="number" min="0.05" max="2.0" step="0.1">
-                  <small class="form-text text-muted">Value is local - not scaled based on content.</small>
+                <div class="form-group row">
+                  <label for="size-input" class="col-sm-2 col-form-label">Size</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" v-model="item.size" placeholder="0.2" type="number" min="0.05" max="2.0" step="0.1">
+                  </div>
                 </div>
 
 
@@ -87,7 +91,9 @@
                   <textarea class="form-control" v-model="item.points_raw" placeholder="json of points"></textarea>
                 </div>
                 <div class="form-group">
-                  <button class="btn btn-danger" v-on:click="pointSets.splice(index, 1)"><i class="fas fa-times-circle"></i></button>
+                  <button class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">
+                    <i class="fas fa-times-circle"></i>
+                  </button>
                 </div>
               </form>
             </template>
