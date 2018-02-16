@@ -46,7 +46,7 @@
             <template v-for="(item, index) in pointSets">
               <form class="border rounded pad stripe set" id="my-set">
                 <div class="form-group row">
-                  <div class="col-sm-6">
+                  <div class="col-sm-9">
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="visible-check" v-model="item.visible">
                       <label class="form-check-label" for="visible-check">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
@@ -55,11 +55,6 @@
                   <div class="col-sm-3">
                     <button type="button" class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">
                       <i class="fas fa-times-circle"></i>
-                    </button>
-                  </div>
-                  <div class="col-sm-3">
-                    <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#my-set">
-                      <i class="fas fa-eye-slash"></i>
                     </button>
                   </div>
                 </div>
