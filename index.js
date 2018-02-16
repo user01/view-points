@@ -421,7 +421,7 @@ function init(data) {
       }
     });
   };
-  const update_scene = _.debounce(update_scene_, 1250);
+  const update_scene = _.debounce(update_scene_, 250);
 
   fetch('points.json')
     .then((response) => {
