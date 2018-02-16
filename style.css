@@ -1,4 +1,4 @@
-#vue-forms > form:nth-of-type(odd) {
+#vue-forms > form.set:nth-of-type(even) {
     background: #e0e0e0;
 }
 
@@ -7,6 +7,9 @@ h3 {
 }
 h4 {
   text-align: center;
+}
+h5 {
+  white-space: nowrap;
 }
 
 .block {
@@ -20,4 +23,12 @@ form.pad {
   padding: 0.4em;
   margin: 0.2em;
   margin-top: 0.6em;
+}
+
+.data-set {
+  font-family: monospace;
+}
+
+.center {
+  text-align: center;
 }

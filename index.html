@@ -21,12 +21,9 @@
 
 <body>
   <h3>
-    View Points
+    Visualize Points
   </h3>
-  <h4>
-    <i class="fas fa-mouse-pointer"></i>
-    <small class="text-muted" id="header-label">One Moment</small>
-  </h4>
+
 
 
   <div class="container">
@@ -36,19 +33,36 @@
       <div class="col">
 
         <div>
-          <form>
-            <div class="form-group">
-              <label for="txtfiletoread">JSON Payload</label>
-              <input type="file" class="form-control-file" id="txtfiletoread" />
-            </div>
-          </form>
+          <h5>
+            <i class="fas fa-mouse-pointer"></i>
+            <small class="text-muted" id="header-label">One Moment</small>
+          </h5>
+
           <div id="vue-forms">
-            <div class="form-group">
+            <div class="form-group center">
               <button type="button" class="btn btn-primary" v-on:click="addNewPointSet">
                 <i class="fas fa-plus-circle"></i> Point Set</button>
             </div>
             <template v-for="(item, index) in pointSets">
-              <form class="border rounded pad stripe">
+              <form class="border rounded pad stripe set" id="my-set">
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="visible-check" v-model="item.visible">
+                      <label class="form-check-label" for="visible-check">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <button type="button" class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">
+                      <i class="fas fa-times-circle"></i>
+                    </button>
+                  </div>
+                  <div class="col-sm-3">
+                    <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#my-set">
+                      <i class="fas fa-eye-slash"></i>
+                    </button>
+                  </div>
+                </div>
 
                 <div class="form-group row">
                   <label for="name-input" class="col-sm-2 col-form-label">Name</label>
@@ -83,33 +97,25 @@
                   </div>
                 </div>
 
-                <div class="form-group row">
-                  <div class="col-sm-6">
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="visible-check" v-model="item.visible">
-                      <label class="form-check-label" for="visible-check">{{ item.visible ? 'Visible' : 'Invisible' }}</label>
-                    </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <button type="button" class="btn btn-danger" v-on:click="pointSets.splice(index, 1)">
-                      <i class="fas fa-times-circle"></i>
-                    </button>
-                  </div>
-                </div>
 
                 <div class="form-group">
-                  <textarea class="form-control" v-model="item.points_raw" placeholder="json of points"></textarea>
+                  <textarea class="form-control data-set" v-model="item.points_raw" placeholder="json of points"></textarea>
                 </div>
 
               </form>
             </template>
 
             <hr />
+            <form>
+              <div class="form-group">
+                <label for="txtfiletoread">JSON Payload</label>
+                <input type="file" class="form-control-file" id="txtfiletoread" />
+              </div>
+            </form>
 
             <form class="border border-info">
-
               <div>
-                <textarea class="form-control" v-model="fullset" placeholder="[]"></textarea>
+                <textarea class="form-control data-set" v-model="fullset" placeholder="[]"></textarea>
               </div>
             </form>
 
