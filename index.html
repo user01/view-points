@@ -48,6 +48,9 @@
                 <i class="fas fa-plus-circle"></i> Point Set</button>
             </div>
             <div class="data-col">
+              <p v-show="pointSets.length == 0" class="center">
+                No Point Sets
+              </p>
               <template v-for="(item, index) in pointSets">
                 <form class="border rounded pad stripe set" id="my-set">
                   <div class="form-group row">
