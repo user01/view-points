@@ -476,7 +476,7 @@ function init(data) {
           }),
           points_raw: points.map(line => line.join(',')).join('\n'),
           points,
-          type: "cloud"
+          type: "sphere"
         });
       }
     },
