@@ -194,6 +194,9 @@ function add_raw_points(data) {
 
 function init(data) {
   const elm = document.getElementById('render-port');
+  const feedback = document.getElementById('feedback');
+  const feedback_p = document.getElementById('hover');
+
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -356,10 +359,11 @@ function init(data) {
     if (intersects.length > 0) {
       // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
       header_label.innerHTML = intersects[0].object.name;
+      feedback_p.innerHTML = intersects[0].object.name;
+      feedback.style.display = 'block';
     } else {
-      if (header_label.innerHTML.indexOf("fa-binoculars ") < 0) {
-        // console.log('Hammer');
-        header_label.innerHTML = `<i class="fas fa-binoculars  fa-spin"></i>`;
+      if (feedback.style.display == 'block') {
+        feedback.style.display = 'none';
       }
     }
     renderer.render(scene, camera);
@@ -392,6 +396,9 @@ function init(data) {
 
   function onDocumentMouseMove(event) {
     event.preventDefault();
+    feedback.style.top = `${event.pageY}px`;
+    feedback.style.left = `${event.pageX + 35}px`;
+
     const offset = elm.getBoundingClientRect();
     mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
     mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;

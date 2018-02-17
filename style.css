@@ -50,3 +50,20 @@ no-gutters {
 body {
   background: #e9ecef;
 }
+
+div#feedback {
+  position: absolute;
+
+  top: 22500px;
+  left: 22200px;
+  background: #d8d8d8e4;
+  padding: 0.3em;
+  min-width: 10em;
+  -moz-border-radius: 15px;
+  border-radius: 0.2em;
+  font-family: monospace;
+}
+
+p#hover {
+  margin: 0.2em;
+}
