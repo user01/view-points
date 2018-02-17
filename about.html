@@ -49,7 +49,8 @@
       <div class="col-md-4">
         <h2>Point Formatting</h2>
         <p>Points can be formatted as json, csv, tsv, or numpy array. Paste the string into the data field.</p>
-        <p>Each element/row must contain exactly three floats, corresponding to XYZ. The system will automatically scale and transform the points to fill the local space.</p>
+        <p>Each element/row must contain exactly three floats, corresponding to XYZ. The system will automatically scale and
+          transform the points to fill the local space.</p>
       </div>
       <div class="col-md-4">
         <h2>Reading/Writing</h2>
@@ -64,31 +65,55 @@
 
   </div>
 
+  <hr />
+
   <h3>Render Types</h3>
 
   <div class="container">
     <!-- Example row of columns -->
     <div class="row">
-      <div class="col-md-4">
-
-      </div>
-      <div class="col-md-4">
-
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Cloud</h5>
-            <p class="card-text">Point cloud ren.</p>
-          </div>
-        </div>
-
-      </div>
-      <div class="col-md-4">
-        <h2>Reading/Writing</h2>
+      <div class="col-md-3">
+        <h3>
+          Point Cloud
+        </h3>
         <p>
-          The tool works with raw 3d points, not meshes or complex scenes. The system can read/write a simple custom json format.
+          Point clouds are the default point type and the cheapest to render. The flat 2d sprites are partially transparent and best
+          for large numbers of points.
         </p>
         <p>
-          <a class="btn btn-secondary" href="#" role="button">View details &raquo;</a>
+          Very large point clouds (> 500 points) are randomly sampled to prevent overwhelming the simple display. Note that individual
+          points are not tagged for this display.
+        </p>
+
+      </div>
+      <div class="col-md-3">
+        <h3>
+          Spheres
+        </h3>
+        <p>
+          Places a sphere at each point location.
+        </p>
+        <p>
+          Spheres are reduced in quality if more than 20 points exist in set.
+        </p>
+
+      </div>
+
+      <div class="col-md-3">
+        <h3>
+          Path
+        </h3>
+        <p>
+          Connects the series of points in a single continuous spline path. Order of points is preserved.
+        </p>
+      </div>
+
+      <div class="col-md-3">
+        <h3>
+          Vector
+        </h3>
+        <p>
+          Connects each pair of points with a cylinder. Requires an even number of points to render.
         </p>
       </div>
     </div>
