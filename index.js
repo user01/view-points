@@ -207,9 +207,12 @@ function init(data) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
-  const stats = new Stats();
-  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-  document.body.appendChild(stats.dom);
+  var stats;
+  if (/[?&]q=stats/.test(location.search)){
+    stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
+  }
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(70, elm.clientWidth / elm.clientHeight, 0.001, 1000);
@@ -373,7 +376,9 @@ function init(data) {
       }
     }
     renderer.render(scene, camera);
-    stats.update();
+    if (stats){
+      stats.update();
+    }
   }
 
   function onWindowResize() {
@@ -384,11 +389,15 @@ function init(data) {
   }
 
   function animate() {
-    stats.begin();
+    if (stats){
+      stats.begin();
+    }
     controls.update();
 
     render();
-    stats.end();
+    if (stats){
+      stats.end();
+    }
     setTimeout(function () {
       requestAnimationFrame(animate);
     }, 1000 / 60);
