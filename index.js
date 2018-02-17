@@ -418,11 +418,24 @@ function init(data) {
     mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
     mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;
   }
+  function onDocumentMouseDown(e) {
+    e.preventDefault();
+    // leverage html for id
+    const cur_sel = feedback_p.innerHTML;
+    // Do regex (remove #number and spaces for id)
+    const element_id = cur_sel.replace(/^\w+/, '').replace(/\s+/g,'').replace(/#\d+$/, '');
+    console.log(`Started with ${cur_sel} and ended with ${element_id}`);
+    const element = document.getElementById(element_id);
+    if (element) {
+      VueScrollTo.scrollTo(element);
+    }
+  }
 
   elm.appendChild(renderer.domElement);
 
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
+  elm.addEventListener('mousedown', onDocumentMouseDown, false);;
   render();
   animate();
 
@@ -501,6 +514,25 @@ function init(data) {
       }
     }
   });
+
+  VueScrollTo.setDefaults({
+    container: "#scroll-target",
+    duration: 500,
+    easing: "ease",
+    offset: 0,
+    cancelable: true,
+    onDone: false,
+    onCancel: false,
+    x: false,
+    y: true
+  });
+
+  // setTimeout(()=>{
+  //   console.log('FIRES');
+  //   const element = document.getElementById('Points-1')
+
+  //   var cancelScroll = VueScrollTo.scrollTo(element);
+  // },2000);
 
   var current_objects = [];
   const update_scene_ = (data) => {
