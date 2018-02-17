@@ -95,7 +95,7 @@ function parse_csv(points_raw) {
 
 function parse_tsv(points_raw) {
   try {
-    var points = parseCSV(points_raw, '\t');
+    var points = points_raw.split('\n').map(line => line.split(/\s+/g).map(x => +x));
     if (valid_point_set(points)) {
       return points;
     }
@@ -107,36 +107,42 @@ function valid_point_set(points) {
   if (!R.is(Array, points)) {
     return false;
   }
-  points.forEach(elm => {
+  for (var i=0; i<points.length; i++){
+    var elm = points[i];
     if (!R.is(Array, elm)) {
       return false;
     }
     if (elm.length != 3) {
       return false;
     }
-  })
+  }
+
   return true;
 }
 
 function parse_points(points_raw) {
   const points_json = parse_json(points_raw);
   if (points_json != false) {
+    console.log('json', points_json);
     return points_json;
   }
   const points_numpy = parse_numpy(points_raw);
   if (points_numpy != false) {
-    console.log(points_numpy);
+    console.log('numpy', points_numpy);
     return points_numpy;
   }
   const points_csv = parse_csv(points_raw);
   if (points_csv != false) {
+    console.log('csv', points_csv);
     console.log(points_csv);
     return points_csv;
   }
   const points_tsv = parse_tsv(points_raw);
   if (points_tsv != false) {
+    console.log('tsv', points_tsv);
     return points_tsv;
   }
+  console.log('Failed to parse', points_raw);
   return [];
 }
 
