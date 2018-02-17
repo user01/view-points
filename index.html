@@ -87,7 +87,7 @@
                         <input id="color-input" class="form-control" v-model="item.color0" placeholder="#3A015C">
                       </div>
                       <div class="col-sm-4">
-                          <input  v-bind:style="{ backgroundColor: item.color0 }" disabled="disabled" class="form-control" placeholder="">
+                        <input v-bind:style="{ backgroundColor: item.color0 }" disabled="disabled" class="form-control" placeholder="">
                       </div>
                     </div>
 
@@ -111,7 +111,7 @@
                       </div>
                     </div>
 
-                    <p  v-show="item.points_raw.length >= 10000">
+                    <p v-show="item.points_raw.length >= 10000">
                       Points suppressed: over limit.
                     </p>
                     <div v-show="item.points_raw.length < 10000" class="form-group">
@@ -124,17 +124,22 @@
             </div>
 
             <hr />
-            <form>
-              <div class="form-group">
-                <label for="txtfiletoread">Upload JSON Point Set</label>
-                <input type="file" class="form-control-file" id="txtfiletoread" />
-              </div>
-            </form>
 
             <div class="form-group center">
               <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
                 <i class="fas fa-save"></i> Download Current Points</button>
             </div>
+
+            <form>
+              <div class="form-group">
+                <label for="txtfiletoread">Upload JSON Point Set
+                  <br />
+                  <span class="text-warning">Overwrites existing points</span>
+                </label>
+                <input type="file" class="form-control-file" id="txtfiletoread" />
+              </div>
+            </form>
+
 
             <div class="form-group center">
               <a class="btn btn-info" href="about.html">
