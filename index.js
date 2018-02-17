@@ -207,7 +207,7 @@ function init(data) {
   camera.position.z = 12;
   // camera.position.y = 10;
 
-  scene.background = new THREE.Color(0xa0a0a0);
+  scene.background = new THREE.Color(0xe9ecef);
   scene.add(new THREE.AmbientLight(0x505050, 3.75));
 
   const light = new THREE.DirectionalLight(0xffffff);

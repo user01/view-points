@@ -46,3 +46,7 @@ no-gutters {
   height: calc(50vh);
   overflow: scroll;
 }
+
+body {
+  background: #e9ecef;
+}
