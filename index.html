@@ -135,8 +135,8 @@
             <form>
               <div class="form-group">
                 <label for="txtfiletoread">Upload JSON Point Set
-                  <br />
-                  <span class="text-warning">Overwrites existing points</span>
+                  <br v-show="pointSets.length != 0" />
+                  <span v-show="pointSets.length != 0" class="text-warning">Overwrites existing points</span>
                 </label>
                 <input type="file" class="form-control-file" id="txtfiletoread" />
               </div>
