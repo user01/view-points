@@ -124,14 +124,19 @@
             <hr />
             <form>
               <div class="form-group">
-                <label for="txtfiletoread">JSON Payload</label>
+                <label for="txtfiletoread">Upload JSON Point Set</label>
                 <input type="file" class="form-control-file" id="txtfiletoread" />
               </div>
             </form>
 
             <div class="form-group center">
-              <button type="button" class="btn btn-info" v-on:click="downloadCurrentSet">
+              <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
                 <i class="fas fa-save"></i> Download Current Points</button>
+            </div>
+
+            <div class="form-group center">
+              <a class="btn btn-info" href="about.html">
+                <i class="fas fa-info-circle"></i> Help</a>
             </div>
 
           </div>
