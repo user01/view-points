@@ -15,9 +15,9 @@ h5 {
 }
 
 .block {
-  height: -webkit-calc(100vh - 72px);
-  height: -moz-calc(100vh - 72px);
-  height: calc(100vh - 72px);
+  height: -webkit-calc(100vh - 3em);
+  height: -moz-calc(100vh - 3em);
+  height: calc(100vh - 3em);
   padding: 0;
 }
 
@@ -41,9 +41,8 @@ no-gutters {
 }
 
 .data-col {
-  height: -webkit-calc(100vh - 30em);
-  height: -moz-calc(100vh - 30em);
-  height: calc(100vh - 30em);
+  height: -webkit-calc(50vh);
+  height: -moz-calc(50vh);
+  height: calc(50vh);
   overflow: scroll;
-
 }
