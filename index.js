@@ -315,6 +315,7 @@ function init(data) {
       opacity: 0.3,
       color: data.color0,
       alphaTest: 0.3,
+      depthWrite: false,
       side: THREE.DoubleSide
     });
     const geometry = new THREE.Geometry();
