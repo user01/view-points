@@ -492,8 +492,14 @@ function init(data) {
       pointSets: [],
     },
     methods: {
-      purgeVisible: function() {
+      purgeVisible: function () {
+        console.log(this.filter);
         this.pointSets = this.pointSets.filter(set => !set.name.includes(this.filter));
+      },
+      toggleVisible: function () {
+        this.pointSets = this.pointSets.map(set => !set.name.includes(this.filter) ? set : R.merge(set, {
+          visible: !set.visible
+        }));
       },
       downloadCurrentSet: function () {
         const text = this.fullset;
