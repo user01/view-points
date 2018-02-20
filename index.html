@@ -56,8 +56,13 @@
 
                 <div class="form-group row">
                   <label for="name-input" class="col-sm-2 col-form-label">Filter</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-6">
                     <input class="form-control" v-model="filter" placeholder="">
+                  </div>
+                  <div class="col-sm-4">
+                    <button type="button" v-show="pointSets.length > 0" class="btn btn-danger btn-block" v-on:click="purgeVisible">
+                      <i class="fas fa-exclamation-triangle "></i>&nbsp; Remove Visible
+                    </button>
                   </div>
                 </div>
 

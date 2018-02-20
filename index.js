@@ -492,6 +492,9 @@ function init(data) {
       pointSets: [],
     },
     methods: {
+      purgeVisible: function() {
+        this.pointSets = this.pointSets.filter(set => !set.name.includes(this.filter));
+      },
       downloadCurrentSet: function () {
         const text = this.fullset;
         var fileSelected = document.getElementById('txtfiletoread');
