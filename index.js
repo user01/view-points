@@ -311,7 +311,11 @@ function init(data) {
     }
 
     const material = new THREE.MeshBasicMaterial({
-      color: data.color0
+      transparent: true,
+      opacity: 0.3,
+      color: data.color0,
+      alphaTest: 0.3,
+      side: THREE.DoubleSide
     });
     const geometry = new THREE.Geometry();
     for (var i = 0; i < data.points.length; i++) {
