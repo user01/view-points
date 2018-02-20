@@ -488,6 +488,7 @@ function init(data) {
   const vm = new Vue({
     el: '#vue-forms',
     data: {
+      filter: '',
       pointSets: [],
     },
     methods: {
@@ -529,26 +530,40 @@ function init(data) {
       }
     },
     watch: {
-      // whenever question changes, this function will run
+      // whenever pointSets changes, this function will run
       pointSets: {
         handler(newpointSets, oldpointSets) {
+          console.log(this.filter);
           // console.log(newpointSets);
-          // TODO: Update THREE.js scene
-          // TODO: Debounce this call
-          const fixedPointSets = newpointSets.map(set => {
+          const fixedPointSets = newpointSets.filter(set => set.name.includes(this.filter)).map(set => {
             // TODO: handle python strings
-            // console.log(set.points_raw);
             const points = parse_points(set.points_raw);
-            // console.log(points);
             return R.merge(set, {
               points
             });
           });
-          // this.pointSetsReal = fixedPointSets;
+
           // console.log(JSON.stringify(fixedPointSets));
           update_scene(fixedPointSets);
         },
         deep: true,
+      },
+      filter: {
+        handler() {
+          console.log(this.filter);
+          // TODO: DRY out this code with pointSets watcher
+          const fixedPointSets = this.pointSets.filter(set => set.name.includes(this.filter)).map(set => {
+            // TODO: handle python strings
+            const points = parse_points(set.points_raw);
+            return R.merge(set, {
+              points
+            });
+          });
+
+          // console.log(JSON.stringify(fixedPointSets));
+          update_scene(fixedPointSets);
+        },
+        deep: false,
       }
     },
     computed: {

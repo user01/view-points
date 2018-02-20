@@ -52,6 +52,16 @@
               <p v-show="pointSets.length == 0" class="center">
                 No Point Sets
               </p>
+              <form class="border rounded pad stripe set" v-show="pointSets.length != 0">
+
+                <div class="form-group row">
+                  <label for="name-input" class="col-sm-2 col-form-label">Filter</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" v-model="filter" placeholder="">
+                  </div>
+                </div>
+
+              </form>
               <template v-for="(item, index) in pointSets">
                 <form class="border rounded pad stripe set" :id="item.name.replace(/\s+/g, '')">
                   <h5 class="center">
