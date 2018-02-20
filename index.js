@@ -107,7 +107,7 @@ function valid_point_set(points) {
   if (!R.is(Array, points)) {
     return false;
   }
-  for (var i=0; i<points.length; i++){
+  for (var i = 0; i < points.length; i++) {
     var elm = points[i];
     if (!R.is(Array, elm)) {
       return false;
@@ -208,7 +208,7 @@ function init(data) {
   const mouse = new THREE.Vector2();
 
   var stats;
-  if (/[?&]q=stats/.test(location.search)){
+  if (/[?&]q=stats/.test(location.search)) {
     stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(stats.dom);
@@ -302,6 +302,36 @@ function init(data) {
     return spheres;
   }
 
+  const add_plane = (data) => {
+    console.log(`Adding plane ${data.name}`);
+
+    if (data.points.length != 4) {
+      console.warn(`Skipped ${data.name} due to count of ${data.points.length} points`);
+      return new THREE.Object3D();
+    }
+
+    const material = new THREE.MeshBasicMaterial({
+      color: data.color0
+    });
+    const geometry = new THREE.Geometry();
+    for (var i = 0; i < data.points.length; i++) {
+      var particle = new THREE.Vector3(
+        data.points[i][0],
+        data.points[i][1],
+        data.points[i][2],
+      );
+      geometry.vertices.push(particle);
+    }
+    geometry.faces.push(
+      new THREE.Face3(2, 1, 0), //use vertices of rank 2,1,0
+      new THREE.Face3(3, 1, 2) //vertices[3],1,2...
+    );
+    const plane = new THREE.Mesh(geometry, material);
+    plane.name = data.name;
+    scene.add(plane);
+    return plane;
+  }
+
 
   const add_path = (data) => {
     if (data.points.length < 2) {
@@ -376,7 +406,7 @@ function init(data) {
       }
     }
     renderer.render(scene, camera);
-    if (stats){
+    if (stats) {
       stats.update();
     }
   }
@@ -389,13 +419,13 @@ function init(data) {
   }
 
   function animate() {
-    if (stats){
+    if (stats) {
       stats.begin();
     }
     controls.update();
 
     render();
-    if (stats){
+    if (stats) {
       stats.end();
     }
     setTimeout(function () {
@@ -418,12 +448,13 @@ function init(data) {
     mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
     mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;
   }
+
   function onDocumentMouseDown(e) {
     e.preventDefault();
     // leverage html for id
     const cur_sel = feedback_p.innerHTML;
     // Do regex (remove #number and spaces for id)
-    const element_id = cur_sel.replace(/^\w+/, '').replace(/\s+/g,'').replace(/#\d+$/, '');
+    const element_id = cur_sel.replace(/^\w+/, '').replace(/\s+/g, '').replace(/#\d+$/, '');
     console.log(`Started with ${cur_sel} and ended with ${element_id}`);
     const element = document.getElementById(element_id);
     if (element) {
@@ -445,12 +476,14 @@ function init(data) {
       pointSets: [],
     },
     methods: {
-      downloadCurrentSet: function() {
+      downloadCurrentSet: function () {
         const text = this.fullset;
         var fileSelected = document.getElementById('txtfiletoread');
-        const prefix = fileSelected.files.length > 0 ? fileSelected.files[0].name.replace('.json','') : 'points';
+        const prefix = fileSelected.files.length > 0 ? fileSelected.files[0].name.replace('.json', '') : 'points';
         const filename = `${prefix}.${(new Date()).toISOString()}.json`;
-        const blob = new Blob([text], {type: "application/json;charset=utf-8"});
+        const blob = new Blob([text], {
+          type: "application/json;charset=utf-8"
+        });
         saveAs(blob, filename);
       },
       addNewPointSet: function () {
@@ -551,6 +584,8 @@ function init(data) {
             return [add_cloud(item)];
           case 'sphere':
             return add_spheres(item);
+          case 'plane':
+            return add_plane(item);
           case 'path':
             return [add_path(item)];
           case 'vector':
