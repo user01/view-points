@@ -53,7 +53,7 @@
                 No Point Sets
               </p>
               <template v-for="(item, index) in pointSets">
-                <form class="border rounded pad stripe set" :id="item.name.replace(' ','')">
+                <form class="border rounded pad stripe set" :id="item.name.replace(/\s+/g, '')">
                   <h5 class="center">
                     {{item.name}}
                   </h5>

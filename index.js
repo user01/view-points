@@ -331,9 +331,10 @@ function init(data) {
       new THREE.Face3(3, 1, 2) //vertices[3],1,2...
     );
     const plane = new THREE.Mesh(geometry, material);
-    plane.name = data.name;
+    plane.name = `Plane ${data.name}`;
     scene.add(plane);
-    return plane;
+    const spheres = add_spheres(data);
+    return R.concat([plane], spheres);
   }
 
 
@@ -458,11 +459,21 @@ function init(data) {
     // leverage html for id
     const cur_sel = feedback_p.innerHTML;
     // Do regex (remove #number and spaces for id)
+
     const element_id = cur_sel.replace(/^\w+/, '').replace(/\s+/g, '').replace(/#\d+$/, '');
     console.log(`Started with ${cur_sel} and ended with ${element_id}`);
     const element = document.getElementById(element_id);
     if (element) {
       VueScrollTo.scrollTo(element);
+    } else {
+      const element_id_num = cur_sel.replace(/^\w+/, '').replace(/\s+/g, '');
+      console.log(`Fall back with ${cur_sel} and ended with ${element_id_num}`);
+      const element_num = document.getElementById(element_id);
+      if (element_num) {
+        VueScrollTo.scrollTo(element_num);
+      } else {
+        console.warn(`Unable to find ${cur_sel}`);
+      }
     }
   }
 
