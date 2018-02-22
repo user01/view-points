@@ -123,18 +123,18 @@ function valid_point_set(points) {
 function parse_points(points_raw) {
   const points_json = parse_json(points_raw);
   if (points_json != false) {
-    console.log('json', points_json);
+    // console.log('json', points_json);
     return points_json;
   }
   const points_numpy = parse_numpy(points_raw);
   if (points_numpy != false) {
-    console.log('numpy', points_numpy);
+    // console.log('numpy', points_numpy);
     return points_numpy;
   }
   const points_csv = parse_csv(points_raw);
   if (points_csv != false) {
-    console.log('csv', points_csv);
-    console.log(points_csv);
+    // console.log('csv', points_csv);
+    // console.log(points_csv);
     return points_csv;
   }
   const points_tsv = parse_tsv(points_raw);
@@ -555,7 +555,7 @@ function init(data) {
       // whenever pointSets changes, this function will run
       pointSets: {
         handler(newpointSets, oldpointSets) {
-          console.log(this.filter);
+          // console.log(this.filter);
           // console.log(newpointSets);
           const fixedPointSets = newpointSets.filter(set => set.name.includes(this.filter)).map(set => {
             // TODO: handle python strings
@@ -689,7 +689,7 @@ function init(data) {
       .then((response) => {
         return response.json();
       }).then((data) => {
-        console.log('parsed data', data);
+        // console.log('parsed data', data);
         // update_scene(json);
         vm.fullset = JSON.stringify(data);
       }).catch((ex) => {
