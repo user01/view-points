@@ -75,3 +75,24 @@ p#hover {
     display: none;
  }
 }
+
+#clipboard-target {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 1px;
+  height: 1px;
+
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+  boxShadow: none;
+  background: transparent;
+}
+
+.tight {
+  margin-bottom: 0;
+}

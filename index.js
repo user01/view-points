@@ -492,6 +492,7 @@ function init(data) {
 
   elm.appendChild(renderer.domElement);
 
+  new Clipboard('.btn-clipboard');
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
   elm.addEventListener('mousedown', onDocumentMouseDown, false);;
@@ -531,6 +532,20 @@ function init(data) {
           type: "application/json;charset=utf-8"
         });
         saveAs(blob, filename);
+      },
+      copyToClipboard: function () {
+        console.log(this.url);
+        if (this.url !== false) {
+          const elm = document.querySelector('#clipboard-target')
+          elm.value = this.url;
+          elm.select();
+          document.execCommand('copy');
+          if (!status) {
+            console.error("Cannot copy text");
+          } else {
+            console.log("The text is now on the clipboard");
+          }
+        }
       },
       addNewPointSet: function () {
         points = R.pipe(
@@ -597,6 +612,19 @@ function init(data) {
       }
     },
     computed: {
+      url: {
+        get: function () {
+          const text = this.fullset;
+          const base64 = btoa(text);
+          const url = `${window.location.href}?data=${base64}`;
+          console.log(url);
+          if (url.length < 8192) {
+            return url;
+          } else {
+            return false;
+          }
+        }
+      },
       fullset: {
         get: function () {
           return JSON.stringify(this.pointSets);
