@@ -56,7 +56,7 @@
             <p v-show="pointSets.length == 0" class="center">
               No Point Sets
             </p>
-            <form class="border rounded pad stripe set" v-show="pointSets.length != 0">
+            <form class="rounded pad stripe set" v-show="pointSets.length != 0">
 
               <div class="form-group row tight">
                 <div class="col-sm-6">
@@ -75,9 +75,9 @@
               </div>
 
             </form>
-            <div id="scroll-target" class="data-col">
+            <div id="scroll-target" class="data-col border rounded white">
               <template v-for="(item, index) in pointSets">
-                <form class="border rounded pad stripe set" :id="item.name.replace(/\s+/g, '')">
+                <form class="rounded pad stripe set" :id="item.name.replace(/\s+/g, '')">
                   <h5 class="center" v-bind:style="{ textDecoration: item.name.includes(filter) ? '' : 'line-through' }">
                     {{item.name}}
                   </h5>

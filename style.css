@@ -96,3 +96,7 @@ p#hover {
 .tight {
   margin-bottom: 0;
 }
+
+.white {
+  background: #f7f7f7;
+}
