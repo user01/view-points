@@ -688,9 +688,10 @@ function init(data) {
     fetch(refUrl)
       .then((response) => {
         return response.json();
-      }).then((json) => {
-        // console.log('parsed json', json);
-        update_scene(json);
+      }).then((data) => {
+        console.log('parsed data', data);
+        // update_scene(json);
+        vm.fullset = JSON.stringify(data);
       }).catch((ex) => {
         console.error('parsing failed')
         console.error(ex);
