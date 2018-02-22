@@ -85,3 +85,7 @@ p#hover {
   boxShadow: none;
   background: transparent;
 }
+
+.tight {
+  margin-bottom: 0;
+}
