@@ -65,7 +65,7 @@ function parse_json(points_raw) {
     if (valid_point_set(points)) {
       return points;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -89,7 +89,7 @@ function parse_csv(points_raw) {
     if (valid_point_set(points)) {
       return points;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -99,7 +99,7 @@ function parse_tsv(points_raw) {
     if (valid_point_set(points)) {
       return points;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -123,18 +123,18 @@ function valid_point_set(points) {
 function parse_points(points_raw) {
   const points_json = parse_json(points_raw);
   if (points_json != false) {
-    console.log('json', points_json);
+    // console.log('json', points_json);
     return points_json;
   }
   const points_numpy = parse_numpy(points_raw);
   if (points_numpy != false) {
-    console.log('numpy', points_numpy);
+    // console.log('numpy', points_numpy);
     return points_numpy;
   }
   const points_csv = parse_csv(points_raw);
   if (points_csv != false) {
-    console.log('csv', points_csv);
-    console.log(points_csv);
+    // console.log('csv', points_csv);
+    // console.log(points_csv);
     return points_csv;
   }
   const points_tsv = parse_tsv(points_raw);
@@ -208,7 +208,19 @@ function init(data) {
   const mouse = new THREE.Vector2();
 
   var stats;
-  if (/[?&]q=stats/.test(location.search)) {
+  var match,
+    pl = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query = window.location.search.substring(1);
+
+  urlParams = {};
+  while (match = search.exec(query)) {
+    urlParams[decode(match[1])] = decode(match[2]);
+  }
+  console.log(urlParams);
+
+  if ('stats' in urlParams) {
     stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(stats.dom);
@@ -543,7 +555,7 @@ function init(data) {
       // whenever pointSets changes, this function will run
       pointSets: {
         handler(newpointSets, oldpointSets) {
-          console.log(this.filter);
+          // console.log(this.filter);
           // console.log(newpointSets);
           const fixedPointSets = newpointSets.filter(set => set.name.includes(this.filter)).map(set => {
             // TODO: handle python strings
@@ -560,7 +572,7 @@ function init(data) {
       },
       filter: {
         handler() {
-          console.log(this.filter);
+          // console.log(this.filter);
           // TODO: DRY out this code with pointSets watcher
           const fixedPointSets = this.pointSets.filter(set => set.name.includes(this.filter)).map(set => {
             // TODO: handle python strings
@@ -599,13 +611,6 @@ function init(data) {
     x: false,
     y: true
   });
-
-  // setTimeout(()=>{
-  //   console.log('FIRES');
-  //   const element = document.getElementById('Points-1')
-
-  //   var cancelScroll = VueScrollTo.scrollTo(element);
-  // },2000);
 
   var current_objects = [];
   const update_scene_ = (data) => {
@@ -668,6 +673,29 @@ function init(data) {
     }, false);
   } else {
     alert("Files are not supported");
+  }
+
+  if (urlParams['data']) {
+    const newData = JSON.parse(atob(urlParams['data']));
+    console.log(newData);
+    vm.fullset = atob(urlParams['data']);
+  } else if (urlParams['ref']) {
+    const ref = urlParams['ref'];
+    // console.log(ref);
+    const refUrl = atob(ref);
+    // console.log(refUrl);
+
+    fetch(refUrl)
+      .then((response) => {
+        return response.json();
+      }).then((data) => {
+        // console.log('parsed data', data);
+        // update_scene(json);
+        vm.fullset = JSON.stringify(data);
+      }).catch((ex) => {
+        console.error('parsing failed')
+        console.error(ex);
+      });
   }
 }
 

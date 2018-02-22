@@ -44,9 +44,15 @@
           </h5>
 
           <div id="vue-forms">
-            <div class="form-group center">
-              <button type="button" class="btn btn-primary btn-block" v-on:click="addNewPointSet">
-                <i class="fas fa-plus-circle"></i> Point Set</button>
+            <div class="form-group row">
+              <div class="col-sm-8">
+                <button type="button" class="btn btn-primary btn-block" v-on:click="addNewPointSet">
+                  <i class="fas fa-plus-circle"></i> Point Set</button>
+              </div>
+              <div class="col-sm-4">
+                <a class="btn btn-info" href="about.html">
+                  <i class="fas fa-info-circle"></i> Help</a>
+              </div>
             </div>
             <p v-show="pointSets.length == 0" class="center">
               No Point Sets
@@ -149,29 +155,25 @@
               </template>
             </div>
 
-            <hr />
+            <div id="lower-section">
+              <hr />
 
-            <div class="form-group center">
-              <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
-                <i class="fas fa-save"></i> Download Current Points</button>
-            </div>
-
-            <form>
-              <div class="form-group">
-                <label for="txtfiletoread">Upload JSON Point Set
-                  <br v-show="pointSets.length != 0" />
-                  <span v-show="pointSets.length != 0" class="text-warning">Overwrites existing points</span>
-                </label>
-                <input type="file" class="form-control-file" id="txtfiletoread" />
+              <div class="form-group center">
+                <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
+                  <i class="fas fa-save"></i> Download Current Points</button>
               </div>
-            </form>
 
+              <form>
+                <div class="form-group">
+                  <label for="txtfiletoread">Upload JSON Point Set
+                    <br v-show="pointSets.length != 0" />
+                    <span v-show="pointSets.length != 0" class="text-warning">Overwrites existing points</span>
+                  </label>
+                  <input type="file" class="form-control-file" id="txtfiletoread" />
+                </div>
+              </form>
 
-            <div class="form-group center">
-              <a class="btn btn-info" href="about.html">
-                <i class="fas fa-info-circle"></i> Help</a>
             </div>
-
           </div>
         </div>
 
