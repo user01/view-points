@@ -208,7 +208,19 @@ function init(data) {
   const mouse = new THREE.Vector2();
 
   var stats;
-  if (/[?&]q=stats/.test(location.search)) {
+  var match,
+    pl = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query = window.location.search.substring(1);
+
+  urlParams = {};
+  while (match = search.exec(query)){
+    urlParams[decode(match[1])] = decode(match[2]);
+  }
+  console.log(urlParams);
+
+  if ('stats' in urlParams) {
     stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(stats.dom);
@@ -560,7 +572,7 @@ function init(data) {
       },
       filter: {
         handler() {
-          console.log(this.filter);
+          // console.log(this.filter);
           // TODO: DRY out this code with pointSets watcher
           const fixedPointSets = this.pointSets.filter(set => set.name.includes(this.filter)).map(set => {
             // TODO: handle python strings
@@ -599,13 +611,6 @@ function init(data) {
     x: false,
     y: true
   });
-
-  // setTimeout(()=>{
-  //   console.log('FIRES');
-  //   const element = document.getElementById('Points-1')
-
-  //   var cancelScroll = VueScrollTo.scrollTo(element);
-  // },2000);
 
   var current_objects = [];
   const update_scene_ = (data) => {
@@ -668,6 +673,12 @@ function init(data) {
     }, false);
   } else {
     alert("Files are not supported");
+  }
+
+  if (urlParams['data']) {
+    const newData = JSON.parse(atob(urlParams['data']));
+    console.log(newData);
+    vm.fullset = atob(urlParams['data']);
   }
 }
 
