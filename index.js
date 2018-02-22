@@ -506,12 +506,20 @@ function init(data) {
     },
     methods: {
       purgeVisible: function () {
-        console.log(this.filter);
+        // console.log(this.filter);
         this.pointSets = this.pointSets.filter(set => !set.name.includes(this.filter));
       },
       toggleVisible: function () {
+        const filter = this.filter;
+        const unified_visibility_state = R.pipe(
+          R.map(R.prop('visible')),
+          R.uniq,
+          R.length,
+          R.equals(1)
+        )(this.pointSets);
+
         this.pointSets = this.pointSets.map(set => !set.name.includes(this.filter) ? set : R.merge(set, {
-          visible: !set.visible
+          visible: unified_visibility_state ? !set.visible : false
         }));
       },
       downloadCurrentSet: function () {
