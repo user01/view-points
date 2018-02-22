@@ -492,7 +492,7 @@ function init(data) {
 
   elm.appendChild(renderer.domElement);
 
-  new Clipboard('.btn');
+  new Clipboard('.btn-clipboard');
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
   elm.addEventListener('mousedown', onDocumentMouseDown, false);;

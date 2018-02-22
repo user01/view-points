@@ -28,8 +28,6 @@
     <i class="fas fa-cubes"></i>
   </h3>
 
-  <input id="clipboard-target" style="display: none;" />
-
   <div class="no-gutters">
     <div class="row">
       <div class="col-8 block" id="render-port">
@@ -162,20 +160,9 @@
               <div class="form-group center">
                 <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
                   <i class="fas fa-save"></i> Download</button>
-                <button type="button" class="btn btn-secondary" v-show="url !== false" v-on:click="copyToClipboard">
+                <button type="button" class="btn btn-secondary btn-clipboard" v-show="url !== false" data-clipboard-target="#clipboard-target">
                   <i class="fas fa-clipboard"></i> Clipboard</button>
-              </div>
-
-              <div class="form-group center">
-                <!-- Target -->
-                <input id="foo" value="[]"  v-model="url">
-
-                <!-- Trigger -->
-                <button class="btn" data-clipboard-target="#foo">
-                  <i class="fas fa-clipboard"></i>
-                </button>
-                <!-- <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
-                  <i class="fas fa-save"></i> Download</button> -->
+                  <input id="clipboard-target" value="[]"  v-model="url">
               </div>
 
               <form>
