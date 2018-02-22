@@ -65,7 +65,7 @@ function parse_json(points_raw) {
     if (valid_point_set(points)) {
       return points;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -89,7 +89,7 @@ function parse_csv(points_raw) {
     if (valid_point_set(points)) {
       return points;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -99,7 +99,7 @@ function parse_tsv(points_raw) {
     if (valid_point_set(points)) {
       return points;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -215,7 +215,7 @@ function init(data) {
     query = window.location.search.substring(1);
 
   urlParams = {};
-  while (match = search.exec(query)){
+  while (match = search.exec(query)) {
     urlParams[decode(match[1])] = decode(match[2]);
   }
   console.log(urlParams);
@@ -679,6 +679,22 @@ function init(data) {
     const newData = JSON.parse(atob(urlParams['data']));
     console.log(newData);
     vm.fullset = atob(urlParams['data']);
+  } else if (urlParams['ref']) {
+    const ref = urlParams['ref'];
+    // console.log(ref);
+    const refUrl = atob(ref);
+    // console.log(refUrl);
+
+    fetch(refUrl)
+      .then((response) => {
+        return response.json();
+      }).then((json) => {
+        // console.log('parsed json', json);
+        update_scene(json);
+      }).catch((ex) => {
+        console.error('parsing failed')
+        console.error(ex);
+      });
   }
 }
 
