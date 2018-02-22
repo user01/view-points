@@ -492,6 +492,7 @@ function init(data) {
 
   elm.appendChild(renderer.domElement);
 
+  new Clipboard('.btn');
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
   elm.addEventListener('mousedown', onDocumentMouseDown, false);;
@@ -534,15 +535,6 @@ function init(data) {
       },
       copyToClipboard: function () {
         console.log(this.url);
-        // const text = this.fullset;
-        // const base64 = btoa(text);
-        // const url = `${window.location.href}?data=${base64}`;
-        // console.log(url);
-        // if (url.length < 8192) {
-        //   console.log('works');
-        // } else {
-        //   console.log('too long');
-        // }
         if (this.url !== false) {
           const elm = document.querySelector('#clipboard-target')
           elm.value = this.url;
