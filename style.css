@@ -68,3 +68,10 @@ div#feedback {
 p#hover {
   margin: 0.2em;
 }
+
+@media (max-width: 540px) {
+ .col-0 {
+  /* background: teal; */
+    display: none;
+ }
+}
