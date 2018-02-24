@@ -67,6 +67,7 @@ div#feedback {
   -moz-border-radius: 15px;
   border-radius: 0.2em;
   font-family: monospace;
+  pointer-events: none;
 }
 
 p#hover {

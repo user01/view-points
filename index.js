@@ -495,7 +495,15 @@ function init(data) {
   new Clipboard('.btn-clipboard');
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
-  elm.addEventListener('mousedown', onDocumentMouseDown, false);;
+  elm.addEventListener('mousedown', onDocumentMouseDown, false);
+  elm.addEventListener('mouseover', ()=>{
+    feedback.style.opacity = '1.0';
+    console.log('over')
+  }, false);
+  elm.addEventListener('mouseout', ()=>{
+    feedback.style.opacity = '0.0';
+    console.log('out')
+  }, false);
   render();
   animate();
 
