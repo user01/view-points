@@ -110,9 +110,9 @@ p#hover {
 }
 
 #vue-forms {
-  height: -webkit-calc(100vh - 6em);
-  height: -moz-calc(100vh - 6em);
-  height: calc(100vh - 6em);
+  height: -webkit-calc(100vh - 5em);
+  height: -moz-calc(100vh - 5em);
+  height: calc(100vh - 5em);
   padding: 0;
   overflow-x: hidden;
   overflow-y: scroll;
