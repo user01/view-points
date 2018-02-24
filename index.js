@@ -696,7 +696,8 @@ function init(data) {
       //Get the file object
       var fileTobeRead = fileSelected.files[0];
       //Check of the extension match
-      if (fileTobeRead.type == 'application/json') {
+      console.log(fileTobeRead.type);
+      if (fileTobeRead.type == 'application/json' || fileTobeRead.type == '') {
         //Initialize the FileReader object to read the 2file
         var fileReader = new FileReader();
         fileReader.onload = function (e) {

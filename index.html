@@ -156,13 +156,18 @@
 
             <div id="lower-section">
 
-              <div class="form-group center">
-                <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
-                  <i class="fas fa-save"></i> Download</button>
-                <button type="button" class="btn btn-secondary btn-clipboard" v-show="url !== false" data-clipboard-target="#clipboard-target">
-                  <i class="fas fa-clipboard"></i> Clipboard</button>
-                  <input id="clipboard-target" value="[]"  v-model="url">
-                <p v-show="(url_raw.length / 8192) > 1">{{Math.round(100 * (url_raw.length / 8192) - 100)}}% Over Clipboard</p>
+              <div class="form-group center row">
+                <div class="col-6">
+                  <button type="button" class="btn btn-secondary" v-on:click="downloadCurrentSet">
+                    <i class="fas fa-save"></i> Download</button>
+                </div>
+                <div class="col-6">
+                  <button type="button" class="btn btn-secondary btn-clipboard" v-show="url !== false" data-clipboard-target="#clipboard-target">
+                    <i class="fas fa-clipboard"></i> Clipboard</button>
+                  <input id="clipboard-target" value="[]" v-model="url">
+                  <p v-show="(url_raw.length / 8192) > 1">{{Math.round(100 * (url_raw.length / 8192) - 100)}}% Over Clipboard</p>
+                </div>
+
               </div>
               <p>{{url_raw.length}}</p>
 
