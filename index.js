@@ -495,7 +495,15 @@ function init(data) {
   new Clipboard('.btn-clipboard');
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
-  elm.addEventListener('mousedown', onDocumentMouseDown, false);;
+  elm.addEventListener('mousedown', onDocumentMouseDown, false);
+  elm.addEventListener('mouseover', ()=>{
+    feedback.style.opacity = '1.0';
+    console.log('over')
+  }, false);
+  elm.addEventListener('mouseout', ()=>{
+    feedback.style.opacity = '0.0';
+    console.log('out')
+  }, false);
   render();
   animate();
 
@@ -614,15 +622,19 @@ function init(data) {
     computed: {
       url: {
         get: function () {
-          const text = this.fullset;
-          const base64 = btoa(text);
-          const url = `${window.location.href}?data=${base64}`;
-          console.log(url);
-          if (url.length < 8192) {
-            return url;
+          if (this.url_raw.length < 8192) {
+            return this.url_raw;
           } else {
             return false;
           }
+        }
+      },
+      url_raw: {
+        get: function () {
+          const text = this.fullset;
+          const base64 = btoa(text);
+          const url = `${window.location.href}?data=${base64}`;
+          return url;
         }
       },
       fullset: {
@@ -692,7 +704,8 @@ function init(data) {
       //Get the file object
       var fileTobeRead = fileSelected.files[0];
       //Check of the extension match
-      if (fileTobeRead.type == 'application/json') {
+      console.log(fileTobeRead.type);
+      if (fileTobeRead.type == 'application/json' || fileTobeRead.type == '') {
         //Initialize the FileReader object to read the 2file
         var fileReader = new FileReader();
         fileReader.onload = function (e) {
