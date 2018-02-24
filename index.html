@@ -162,7 +162,9 @@
                 <button type="button" class="btn btn-secondary btn-clipboard" v-show="url !== false" data-clipboard-target="#clipboard-target">
                   <i class="fas fa-clipboard"></i> Clipboard</button>
                   <input id="clipboard-target" value="[]"  v-model="url">
+                <p v-show="(url_raw.length / 8192) > 1">{{Math.round(100 * (url_raw.length / 8192) - 100)}}% Over Clipboard</p>
               </div>
+              <p>{{url_raw.length}}</p>
 
               <form>
                 <div class="form-group">

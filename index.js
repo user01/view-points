@@ -614,15 +614,19 @@ function init(data) {
     computed: {
       url: {
         get: function () {
-          const text = this.fullset;
-          const base64 = btoa(text);
-          const url = `${window.location.href}?data=${base64}`;
-          console.log(url);
-          if (url.length < 8192) {
-            return url;
+          if (this.url_raw.length < 8192) {
+            return this.url_raw;
           } else {
             return false;
           }
+        }
+      },
+      url_raw: {
+        get: function () {
+          const text = this.fullset;
+          const base64 = btoa(text);
+          const url = `${window.location.href}?data=${base64}`;
+          return url;
         }
       },
       fullset: {
