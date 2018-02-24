@@ -171,11 +171,15 @@
 
               <form>
                 <div class="form-group">
-                  <label for="txtfiletoread">Upload JSON Point Set
-                    <br v-show="pointSets.length != 0" />
-                    <span v-show="pointSets.length != 0" class="text-warning">Overwrites existing points</span>
-                  </label>
-                  <input type="file" class="form-control-file" id="txtfiletoread" />
+                  <div v-bind:class="{ alert: true, 'alert-warning': pointSets.length != 0, 'alert-light': pointSets.length == 0 }" role="alert">
+                    <span v-show="pointSets.length != 0">
+                      Overwrite Existing Points
+                    </span>
+                    <span v-show="pointSets.length == 0">
+                      Upload JSON Point Sets
+                    </span>
+                    <input type="file" class="form-control-file" id="txtfiletoread" />
+                  </div>
                 </div>
               </form>
 
