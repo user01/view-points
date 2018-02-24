@@ -167,9 +167,7 @@
                   <input id="clipboard-target" value="[]" v-model="url">
                   <p v-show="(url_raw.length / 8192) > 1">{{Math.round(100 * (url_raw.length / 8192) - 100)}}% Over Clipboard</p>
                 </div>
-
               </div>
-              <p>{{url_raw.length}}</p>
 
               <form>
                 <div class="form-group">
