@@ -496,10 +496,10 @@ function init(data) {
   window.addEventListener('resize', onWindowResize, false);
   elm.addEventListener('mousemove', onDocumentMouseMove, false);
   elm.addEventListener('mousedown', onDocumentMouseDown, false);
-  elm.addEventListener('mouseover', ()=>{
+  elm.addEventListener('mouseover', () => {
     feedback.style.opacity = '1.0';
   }, false);
-  elm.addEventListener('mouseout', ()=>{
+  elm.addEventListener('mouseout', () => {
     feedback.style.opacity = '0.0';
   }, false);
   render();
@@ -629,18 +629,16 @@ function init(data) {
       },
       url_raw: {
         get: function () {
-          const text = this.fullset;
+          const text = JSON.stringify(this.pointSets.map(R.dissoc('points_raw')));
           const base64 = btoa(text);
           const url = `${window.location.href}?data=${base64}`;
           return url;
         }
       },
       fullset: {
-        get: function () {
-          return JSON.stringify(this.pointSets);
-        },
         set: function (newValue) {
-          this.pointSets = JSON.parse(newValue)
+          const pointSets = JSON.parse(newValue);
+          this.pointSets = pointSets.map(set => "points_raw" in set ? set : R.merge(set, { 'points_raw': JSON.stringify(set.points) }));
         }
       }
     }
@@ -723,6 +721,8 @@ function init(data) {
   }
 
   if (urlParams['data']) {
+    console.log(urlParams);
+    console.log(urlParams['data']);
     const newData = JSON.parse(atob(urlParams['data']));
     console.log(newData);
     vm.fullset = atob(urlParams['data']);
