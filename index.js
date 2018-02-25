@@ -1,29 +1,15 @@
 
-
-const size = 5;
-const range = [-size, size];
-
 function init(data) {
   const elm = document.getElementById('render-port');
   const feedback = document.getElementById('feedback');
   const feedback_p = document.getElementById('hover');
-
+  const header_label = document.getElementById("header-label")
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
   var stats;
-  var match,
-    pl = /\+/g,  // Regex for replacing addition symbol with a space
-    search = /([^&=]+)=?([^&]*)/g,
-    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-    query = window.location.search.substring(1);
-
-  urlParams = {};
-  while (match = search.exec(query)) {
-    urlParams[decode(match[1])] = decode(match[2]);
-  }
-  console.log(urlParams);
+  const urlParams = getUrlParams();
 
   if ('stats' in urlParams) {
     stats = new Stats();
@@ -48,8 +34,6 @@ function init(data) {
   axes.position = new THREE.Vector3(0, 0, 0);
   scene.add(axes);
 
-
-
   const controls = new THREE.TrackballControls(camera, elm);
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
@@ -61,11 +45,7 @@ function init(data) {
   controls.keys = [65, 83, 68];
   controls.addEventListener('change', render);
 
-
-  const header_label = document.getElementById("header-label")
-
   function render() {
-
     raycaster.setFromCamera(mouse, camera);
 
     var intersects = R.pipe(
@@ -76,7 +56,6 @@ function init(data) {
       scene.children
     ));
 
-    // console.log(intersects.map(i => i.object.name));
     if (intersects.length > 0) {
       // header_label.innerHTML = `${Number.parseFloat(mouse.x).toFixed(2)} x ${Number.parseFloat(mouse.y).toFixed(2)} ${intersects[0].object.name}`;
       header_label.innerHTML = intersects[0].object.name;
@@ -105,7 +84,6 @@ function init(data) {
       stats.begin();
     }
     controls.update();
-
     render();
     if (stats) {
       stats.end();
@@ -133,22 +111,19 @@ function init(data) {
 
   function onDocumentMouseDown(e) {
     e.preventDefault();
-    // leverage html for id
     const cur_sel = feedback_p.innerHTML;
-    // Do regex (remove #number and spaces for id)
-
     const element_id = cur_sel.replace(/^\w+/, '').replace(/\s+/g, '').replace(/#\d+$/, '');
-    console.log(`Started with ${cur_sel} and ended with ${element_id}`);
+    // console.log(`Started with ${cur_sel} and ended with ${element_id}`);
     const element = document.getElementById(element_id);
     if (element) {
       VueScrollTo.scrollTo(element);
     } else {
       const element_id_num = cur_sel.replace(/^\w+/, '').replace(/\s+/g, '');
-      console.log(`Fall back with ${cur_sel} and ended with ${element_id_num}`);
+      // console.log(`Fall back with ${cur_sel} and ended with ${element_id_num}`);
       const element_num = document.getElementById(element_id);
       if (element_num) {
         VueScrollTo.scrollTo(element_num);
-      } else {
+      } else if (cur_sel.length > 0) {
         console.warn(`Unable to find ${cur_sel}`);
       }
     }
