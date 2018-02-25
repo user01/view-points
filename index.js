@@ -1,6 +1,5 @@
 
 
-const colors = ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000080", "#808080", "#FFFFFF", "#000000"];
 const size = 5;
 const range = [-size, size];
 
@@ -625,23 +624,6 @@ function init(data) {
     // Encode a message to an Uint8Array (browser) or Buffer (node)
     var buffer_set = PointSet.encode(message_set).finish();
 
-    // packing/unpacking from https://codereview.stackexchange.com/a/3589/126736
-    function pack(bytes) {
-      var chars = [];
-      for (var i = 0, n = bytes.length; i < n;) {
-        chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
-      }
-      return String.fromCharCode.apply(null, chars);
-    }
-
-    function unpack(str) {
-      var bytes = [];
-      for (var i = 0, n = str.length; i < n; i++) {
-        var char = str.charCodeAt(i);
-        bytes.push(char >>> 8, char & 0xFF);
-      }
-      return bytes;
-    }
     // ... do something with buffer
 
     // console.log(buffer_set);
