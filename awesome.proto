@@ -1,0 +1,29 @@
+// awesome.proto
+package awesomepackage;
+syntax = "proto3";
+
+message AwesomeMessage {
+    string awesome_field = 1; // becomes awesomeField
+}
+
+message PointSets {
+  repeated PointSet pointsets = 1;
+}
+
+message PointSet {
+  string name = 1;
+  bool visible = 2;
+  string color0 = 3;
+  string color1 = 4;
+
+}
+
+message SearchResponse {
+  repeated Result results = 1;
+}
+
+message Result {
+  string url = 1;
+  string title = 2;
+  repeated string snippets = 3;
+}
