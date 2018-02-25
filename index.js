@@ -498,11 +498,9 @@ function init(data) {
   elm.addEventListener('mousedown', onDocumentMouseDown, false);
   elm.addEventListener('mouseover', ()=>{
     feedback.style.opacity = '1.0';
-    console.log('over')
   }, false);
   elm.addEventListener('mouseout', ()=>{
     feedback.style.opacity = '0.0';
-    console.log('out')
   }, false);
   render();
   animate();
