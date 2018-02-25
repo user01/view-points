@@ -15,7 +15,13 @@ message PointSet {
   bool visible = 2;
   string color0 = 3;
   string color1 = 4;
+  repeated Point points = 5;
+}
 
+message Point {
+  float x = 1;
+  float y = 2;
+  float z = 3;
 }
 
 message SearchResponse {

@@ -749,40 +749,125 @@ function init(data) {
     if (err)
       throw err;
 
+    // // Obtain a message type
+    // var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+
+    // // Exemplary payload
+    // var payload = { awesomeField: "AwesomeString" };
+
+    // // Verify the payload if necessary (i.e. when possibly incomplete or invalid)
+    // var errMsg = AwesomeMessage.verify(payload);
+    // if (errMsg)
+    //   throw Error(errMsg);
+
+    // // Create a new message
+    // var message = AwesomeMessage.create(payload); // or use .fromObject if conversion is necessary
+
+    // // Encode a message to an Uint8Array (browser) or Buffer (node)
+    // var buffer = AwesomeMessage.encode(message).finish();
+    // // ... do something with buffer
+
+
+    // // Decode an Uint8Array (browser) or Buffer (node) to a message
+    // var message = AwesomeMessage.decode(buffer);
+    // // ... do something with message
+    // console.log(message);
+
+    // // If the application uses length-delimited buffers, there is also encodeDelimited and decodeDelimited.
+
+    // // Maybe convert the message back to a plain object
+    // var object = AwesomeMessage.toObject(message, {
+    //   longs: String,
+    //   enums: String,
+    //   bytes: String,
+    //   // see ConversionOptions
+    // });
+    // console.log(object);
+
+
     // Obtain a message type
-    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+    var PointSet = root.lookupType("awesomepackage.PointSet");
 
     // Exemplary payload
-    var payload = { awesomeField: "AwesomeString" };
+    var payload_set = {
+      "name": "buttons",
+      "visible": true,
+      "size": 1.25,
+      "color0": "#d4c9ab",
+      "color1": "#3f4bad",
+      "points": [
+        [
+          0.4,
+          0.8,
+          0.8
+        ],
+      ]
+    };
+
+    payload_set['points'] = payload_set['points'].map(arr => {
+      return { x: arr[0], y: arr[1], z: arr[2] };
+    });
 
     // Verify the payload if necessary (i.e. when possibly incomplete or invalid)
-    var errMsg = AwesomeMessage.verify(payload);
-    if (errMsg)
-      throw Error(errMsg);
+    var errMsg_et = PointSet.verify(payload_set);
+    if (errMsg_et)
+      throw Error(errMsg_et);
 
     // Create a new message
-    var message = AwesomeMessage.create(payload); // or use .fromObject if conversion is necessary
+    var message_set = PointSet.create(payload_set); // or use .fromObject if conversion is necessary
 
     // Encode a message to an Uint8Array (browser) or Buffer (node)
-    var buffer = AwesomeMessage.encode(message).finish();
+    var buffer_set = PointSet.encode(message_set).finish();
+
+    // packing/unpacking from https://codereview.stackexchange.com/a/3589/126736
+    function pack(bytes) {
+      var chars = [];
+      for (var i = 0, n = bytes.length; i < n;) {
+        chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
+      }
+      return String.fromCharCode.apply(null, chars);
+    }
+
+    function unpack(str) {
+      var bytes = [];
+      for (var i = 0, n = str.length; i < n; i++) {
+        var char = str.charCodeAt(i);
+        bytes.push(char >>> 8, char & 0xFF);
+      }
+      return bytes;
+    }
     // ... do something with buffer
+
+    // console.log(buffer_set);
+    // var string = new TextDecoder("utf-8").decode(buffer_set);
+    // console.log(string);
+    // var uint8array = new TextEncoder("utf-8").encode(string);
+    console.log(buffer_set);
+    var string_packed = pack(buffer_set);
+    var string_base64 = btoa(JSON.stringify(payload_set));
+    console.log(string_packed);
+    console.log(string_base64);
+    console.log(`${string_packed.length} vs ${string_base64.length}`)
+    var uint8array = unpack(string_packed);
 
 
     // Decode an Uint8Array (browser) or Buffer (node) to a message
-    var message = AwesomeMessage.decode(buffer);
-    // ... do something with message
-    console.log(message);
+    var message_set = PointSet.decode(uint8array);
+    // var message_set = PointSet.decode(buffer_set);
+    // ... do something with message_set
+    console.log(message_set);
 
     // If the application uses length-delimited buffers, there is also encodeDelimited and decodeDelimited.
 
     // Maybe convert the message back to a plain object
-    var object = AwesomeMessage.toObject(message, {
+    var object_set = PointSet.toObject(message_set, {
       longs: String,
       enums: String,
       bytes: String,
       // see ConversionOptions
     });
-    console.log(object);
+    object_set['points'] = object_set['points'].map(obj => [obj.x, obj.y, obj.z]);
+    console.log(object_set);
   });
 }
 
