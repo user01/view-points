@@ -393,6 +393,7 @@ init();
 const pts = [{"name":"Points-0","visible":true,"size":1.25,"color0":"#4d9452","color1":"#b5aabf","points_raw":"0.2,0.9,0.8\n0.9,0.7,-0.3\n0.2,-0.6,0.9\n0,1,0.5","points":[[0.2,0.9,0.8],[0.9,0.7,-0.3],[0.2,-0.6,0.9],[0,1,0.5]],"type":"sphere"},{"name":"buttons","visible":true,"size":1.25,"color0":"#d4c9ab","color1":"#3f4bad","points_raw":"0.4,0.8,0.8\n1,1,0.8\n0.9,-0.8,-0.9\n-0.5,1,-0.6","points":[[0.4,0.8,0.8],[1,1,0.8],[0.9,-0.8,-0.9],[-0.5,1,-0.6]],"type":"plane"}];
 console.log(pts);
 console.log(pointsets_local_remote(pts));
+console.log(pointsets_remote_local(pointsets_local_remote(pts)));
 
 // protobuf.load("awesome.proto", function (err, root) {
 //   if (err)
