@@ -236,14 +236,10 @@ function init(data) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(70, elm.clientWidth / elm.clientHeight, 0.001, 1000);
   camera.position.z = 12;
-  // camera.position.y = 10;
+  camera.position.y = 2;
 
   scene.background = new THREE.Color(0xe9ecef);
   scene.add(new THREE.AmbientLight(0x505050, 3.75));
-
-  const light = new THREE.DirectionalLight(0xffffff);
-  light.position.set(0, 1, 1).normalize();
-  scene.add(light);
 
   // The X axis is red.The Y axis is green.The Z axis is blue.
   const axes = new THREE.AxisHelper(5);
@@ -505,11 +501,9 @@ function init(data) {
   elm.addEventListener('mousedown', onDocumentMouseDown, false);
   elm.addEventListener('mouseover', ()=>{
     feedback.style.opacity = '1.0';
-    console.log('over')
   }, false);
   elm.addEventListener('mouseout', ()=>{
     feedback.style.opacity = '0.0';
-    console.log('out')
   }, false);
   render();
   animate();
