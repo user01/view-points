@@ -225,6 +225,13 @@ function init(data) {
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(stats.dom);
   }
+  if ('view' in urlParams) {
+    const leftCol = document.getElementById('render-port');
+    const rightCol = document.getElementById('control-port');
+    leftCol.classList.remove('col-sm-8');
+    leftCol.classList.add('col-sm-12');
+    rightCol.classList.remove('col-sm-4');
+  }
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(70, elm.clientWidth / elm.clientHeight, 0.001, 1000);
