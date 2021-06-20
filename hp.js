@@ -61,6 +61,35 @@ function init() {
 
 init();
 
+
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+    var fileSelected = document.getElementById('txtfiletoread');
+    fileSelected.addEventListener('change', function (e) {
+        //Get the file object
+        var fileTobeRead = fileSelected.files[0];
+        //Check of the extension match
+        console.log(fileTobeRead.type);
+        if (fileTobeRead.type == 'application/json' || fileTobeRead.type == '') {
+            //Initialize the FileReader object to read the 2file
+            var fileReader = new FileReader();
+            fileReader.onload = function (e) {
+                const content = JSON.parse(fileReader.result);
+                debugger;
+                // var fileContents = document.getElementById('filecontents');
+                // fileContents.innerText = fileReader.result;
+                // console.log(fileReader.result);
+                //   vm.fullset = JSON.stringify(add_raw_points(JSON.parse(fileReader.result)));
+            }
+            fileReader.readAsText(fileTobeRead);
+        } else {
+            alert("Must be json file");
+        }
+
+    }, false);
+} else {
+    alert("Files are not supported");
+}
+
 // var elm.clientWidth / elm.clientHeight;
 
 // CameraControls.install( { THREE: THREE } );
