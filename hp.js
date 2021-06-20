@@ -5,6 +5,7 @@ CameraControls.install({ THREE: THREE });
 function init(data) {
     console.log("Online");
     document.getElementById('uploader').style.display = 'none';
+    document.getElementById('tools').style.display = 'block';
     const header_label = document.getElementById("header-label");
     const feedback = document.getElementById('feedback');
     const feedback_p = document.getElementById('hover');
@@ -25,11 +26,13 @@ function init(data) {
     const mouse = new THREE.Vector2();
     const camera = new THREE.PerspectiveCamera(75, elm.clientWidth / elm.clientHeight, 0.1, 1000);
     scene.background = new THREE.Color(0xe9ecef);
-    scene.fog = new THREE.Fog(0xe9ecef, 150, 200);
     const light = new THREE.AmbientLight(0x404040, 4.0); // soft white light
     scene.add(light);
 
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        powerPreference: "high-performance",
+    });
     renderer.setSize(elm.clientWidth, elm.clientHeight);
     elm.appendChild(renderer.domElement);
 
@@ -39,7 +42,7 @@ function init(data) {
                 transparent: true,
                 opacity: 0.3,
                 alphaTest: 0.3,
-                depthWrite: true,
+                // depthWrite: false,
                 side: THREE.DoubleSide,
                 color: color,
             });
@@ -50,10 +53,8 @@ function init(data) {
     const getColorMeshStandardMaterial = (color) => {
         if (!(color in colorsMeshStandardMaterial)) {
             colorsMeshStandardMaterial[color] = new THREE.MeshStandardMaterial({
-                // wireframe: true,
                 side: THREE.DoubleSide,
                 color: color
-                // color: 0xff00ff
             });
         }
         return colorsMeshStandardMaterial[color];
@@ -156,7 +157,7 @@ function init(data) {
         if (payload.type == "sphere") {
             const root = new THREE.Object3D();
             payload.points.forEach((pts, i) => {
-                const geo = new THREE.SphereBufferGeometry(payload.size, 16, 16);
+                const geo = new THREE.SphereBufferGeometry(payload.size, 8, 8);
                 const sphere = new THREE.Mesh(geo, getColorMeshStandardMaterial(payload.color0));
                 sphere.name = `Sphere ${data.name} #${i}`;
                 sphere.position.set(pts[0], pts[1], pts[2]);
@@ -168,6 +169,7 @@ function init(data) {
     });
 
     const ctl_flip = new THREE.Object3D();
+    const ctl_rotation = new THREE.Object3D();
     const ctl_scale = new THREE.Object3D();
     ctl_scale.scale.set(scale, scale, scale);
     const ctl_offset = new THREE.Object3D();
@@ -176,7 +178,9 @@ function init(data) {
         ctl_offset.add(obj);
     });
     ctl_scale.add(ctl_offset);
-    ctl_flip.add(ctl_scale);
+    ctl_rotation.add(ctl_scale);
+    ctl_rotation.rotation.set(-2.57, 0, 0.2513);  // hard coded for typical orientation
+    ctl_flip.add(ctl_rotation);
     scene.add(ctl_flip);
 
     camera.position.z = 12;
@@ -189,19 +193,6 @@ function init(data) {
 
 
     function render() {
-        raycaster.setFromCamera(mouse, camera);
-        const casts = raycaster.intersectObjects(scene.children, true).filter(obj => obj.object.name.length > 2);
-        casts.sort((a, b) => a.distance - b.distance);
-        if (casts.length > 1) {
-            const label = casts[0].object.name.length > 0 ? casts[0].object.name : 'None';
-            header_label.innerText = label;
-            feedback_p.innerHTML = label;
-            feedback.style.display = 'block';
-        } else {
-            if (feedback.style.display == 'block') {
-              feedback.style.display = 'none';
-            }
-        }
         renderer.render(scene, camera);
     }
     function onWindowResize() {
@@ -221,10 +212,12 @@ function init(data) {
     render();
     animate();
     window.addEventListener('resize', onWindowResize, false);
-    console.log("Scene polycount:", renderer.info.render.triangles);
-    console.log("Active Drawcalls:", renderer.info.render.calls);
-    console.log("Textures in Memory", renderer.info.memory.textures);
-    console.log("Geometries in Memory", renderer.info.memory.geometries);
+    document.getElementById('console').innerText = `
+Scene polycount: ${renderer.info.render.triangles}
+Active Drawcalls: ${renderer.info.render.calls}
+Geometries in Memory: ${renderer.info.memory.geometries}
+`;
+
 
     rangeX.addEventListener('input', (evt) => {
         const frac = rangeX.value / 100;
@@ -245,8 +238,6 @@ function init(data) {
         render();
     });
 
-
-
     elm.addEventListener('mousemove', (event) => {
         event.preventDefault();
 
@@ -256,7 +247,20 @@ function init(data) {
         const offset = elm.getBoundingClientRect();
         mouse.x = ((event.clientX - offset.left) / elm.clientWidth) * 2 - 1;
         mouse.y = -((event.clientY - offset.top) / elm.clientHeight) * 2 + 1;
-        render();
+
+        raycaster.setFromCamera(mouse, camera);
+        const casts = raycaster.intersectObjects(scene.children, true).filter(obj => obj.object.name.length > 2);
+        casts.sort((a, b) => a.distance - b.distance);
+        if (casts.length > 1) {
+            const label = casts[0].object.name.length > 0 ? casts[0].object.name : 'None';
+            header_label.innerText = label;
+            feedback_p.innerHTML = label;
+            feedback.style.display = 'block';
+        } else {
+            if (feedback.style.display == 'block') {
+                feedback.style.display = 'none';
+            }
+        }
     }, false);
 };
 

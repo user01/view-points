@@ -38,20 +38,32 @@
                                 <div class="form-group">
                                     <div id="uploader">
 
-                                        <label for="txtfiletoread">Upload JSON Point Sets</label>
+                                        <label for="txtfiletoread">Upload JSON Point Set</label>
                                         <input type="file" class="form-control-file" id="txtfiletoread" />
-                                        <p>
-                                            --
-                                        </p>
+                                        <h4>Notes</h4>
+                                        <ul>
+                                            <li>Type 'Cloud' is not supported</li>
+                                            <li>'Size' is relative to the geometry itself, not the viewport</li>
+                                            <li>Vist <a href="index.html">this page</a> for editable, lower performance
+                                                sets</li>
+                                        </ul>
                                     </div>
 
-                                    <hr />
-                                    <label for="customRangeX" class="form-label">X Rotation (<span style="font-weight: bold; color: red;">Red</span>)</label>
-                                    <input type="range" class="form-range" id="customRangeX" disabled>
-                                    <label for="customRangeY" class="form-label">Y Rotation (<span style="font-weight: bold; color: green;">Green</span>)</label>
-                                    <input type="range" class="form-range" id="customRangeY" disabled>
-                                    <label for="customRangeZ" class="form-label">Z Rotation (<span style="font-weight: bold; color: blue;">Blue</span>)</label>
-                                    <input type="range" class="form-range" id="customRangeZ" disabled>
+                                    <div id="tools" style="display: none;">
+                                        <p>To load another set, <a href="hp.html">refresh the page</a></p>
+
+                                        <label for="customRangeX" class="form-label">X Rotation (<span
+                                                style="font-weight: bold; color: red;">Red</span>)</label>
+                                        <input type="range" class="form-range" id="customRangeX" disabled>
+                                        <label for="customRangeY" class="form-label">Y Rotation (<span
+                                                style="font-weight: bold; color: green;">Green</span>)</label>
+                                        <input type="range" class="form-range" id="customRangeY" disabled>
+                                        <label for="customRangeZ" class="form-label">Z Rotation (<span
+                                                style="font-weight: bold; color: blue;">Blue</span>)</label>
+                                        <input type="range" class="form-range" id="customRangeZ" disabled>
+                                        <pre id="console">
+                                        </pre>
+                                    </div>
                                 </div>
                             </form>
 
