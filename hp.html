@@ -2,66 +2,72 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <title>Visualize Points</title>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>Visualize Points</title>
 
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <h3>
-    Visualize Points
-    <i class="fas fa-cubes"></i>
-  </h3>
+    <h3>
+        Visualize Points
+    </h3>
 
-  <div class="no-gutters">
-    <div class="row">
-      <div class="col-12 col-sm-8 block" id="render-port">
-      </div>
-      <div class="col-0 col-sm-4" id="control-port">
+    <div class="no-gutters">
+        <div class="row">
+            <div class="col-12 col-sm-8 block" id="render-port">
+            </div>
+            <div class="col-0 col-sm-4" id="control-port">
 
-        <div class="block">
-          <h5>
-            <i class="fas fa-mouse-pointer"></i>
-            <small class="text-muted" id="header-label">
-              <i class="fas fa-binoculars fa-spin"></i>
-            </small>
-          </h5>
+                <div class="block">
+                    <h5>
+                        <small class="text-muted" id="header-label">
 
-          <div id="vue-forms">
+                        </small>
+                    </h5>
 
-            <div id="lower-section">
+                    <div id="vue-forms">
 
-              <form>
-                <div class="form-group">
-                    
-                    <span v-show="pointSets.length == 0">
-                      Upload JSON Point Sets
-                    </span>
-                    <input type="file" class="form-control-file" id="txtfiletoread" />
+                        <div id="lower-section">
+
+                            <form>
+                                <div class="form-group">
+                                    <div id="uploader">
+
+                                        <label for="txtfiletoread">Upload JSON Point Sets</label>
+                                        <input type="file" class="form-control-file" id="txtfiletoread" />
+                                        <p>
+                                            --
+                                        </p>
+                                    </div>
+
+                                    <hr />
+                                    <label for="customRangeX" class="form-label">X Rotation (<span style="font-weight: bold; color: red;">Red</span>)</label>
+                                    <input type="range" class="form-range" id="customRangeX" disabled>
+                                    <label for="customRangeY" class="form-label">Y Rotation (<span style="font-weight: bold; color: green;">Green</span>)</label>
+                                    <input type="range" class="form-range" id="customRangeY" disabled>
+                                    <label for="customRangeZ" class="form-label">Z Rotation (<span style="font-weight: bold; color: blue;">Blue</span>)</label>
+                                    <input type="range" class="form-range" id="customRangeZ" disabled>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
-              </form>
 
             </div>
-          </div>
         </div>
-
-      </div>
     </div>
-  </div>
 
-  <div id="feedback">
-    <p id="hover">Content!</p>
-  </div>
+    <div id="feedback">
+        <p id="hover">Content!</p>
+    </div>
 
 </body>
 <script type="module" src="hp.js"></script>
+
 </html>
